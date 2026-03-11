@@ -1,16 +1,96 @@
 import Link from "next/link";
 
-interface Model {
+interface Challenge {
   name: string;
   description: string;
   href: string;
+  difficulty: "EASY" | "MEDIUM" | "HARD" | "EXPERT";
 }
 
-interface Provider {
+interface Category {
   name: string;
-  models: Model[];
-  settingsHref: string;
+  description: string;
+  challenges: Challenge[];
+  icon: string;
 }
+
+const categories: Category[] = [
+  {
+    name: "AI CHALLENGES",
+    description: "Modern AI tools & prompt engineering",
+    icon: "[AI]",
+    challenges: [
+      { name: "prompt-engineering", description: "Master AI prompt writing", href: "/challenge/prompt-engineering", difficulty: "EASY" },
+      { name: "ai-code-review", description: "AI-powered code review", href: "/challenge/ai-code-review", difficulty: "MEDIUM" },
+      { name: "copilot-mastery", description: "GitHub Copilot advanced usage", href: "/challenge/copilot-mastery", difficulty: "MEDIUM" },
+      { name: "ai-debugging", description: "Debug with AI assistants", href: "/challenge/ai-debugging", difficulty: "HARD" },
+      { name: "rag-system", description: "Build RAG from scratch", href: "/challenge/rag-system", difficulty: "EXPERT" },
+    ],
+  },
+  {
+    name: "FRONTEND PRINCIPLES",
+    description: "Core frontend fundamentals",
+    icon: "[原理]",
+    challenges: [
+      { name: "event-loop", description: "JavaScript Event Loop", href: "/challenge/event-loop", difficulty: "MEDIUM" },
+      { name: "closure-mastery", description: "Deep dive into Closures", href: "/challenge/closure-mastery", difficulty: "MEDIUM" },
+      { name: "this-binding", description: "Understanding 'this' binding", href: "/challenge/this-binding", difficulty: "EASY" },
+      { name: "async-patterns", description: "Async/Await patterns", href: "/challenge/async-patterns", difficulty: "HARD" },
+      { name: "react-rendering", description: "React rendering optimization", href: "/challenge/react-rendering", difficulty: "EXPERT" },
+    ],
+  },
+  {
+    name: "PERFORMANCE",
+    description: "Web performance optimization",
+    icon: "[性能]",
+    challenges: [
+      { name: "bundle-analysis", description: "Analyze and optimize bundles", href: "/challenge/bundle-analysis", difficulty: "MEDIUM" },
+      { name: "lazy-loading", description: "Code splitting strategies", href: "/challenge/lazy-loading", difficulty: "EASY" },
+      { name: "rendering-strategies", description: "CSR vs SSR vs SSG vs ISR", href: "/challenge/rendering-strategies", difficulty: "HARD" },
+      { name: "memory-leaks", description: "Detect and fix memory leaks", href: "/challenge/memory-leaks", difficulty: "EXPERT" },
+    ],
+  },
+  {
+    name: "NETWORK",
+    description: "HTTP & network protocols",
+    icon: "[网络]",
+    challenges: [
+      { name: "http-basics", description: "HTTP methods & status codes", href: "/challenge/http-basics", difficulty: "EASY" },
+      { name: "cors-deep-dive", description: "CORS preflight & policies", href: "/challenge/cors-deep-dive", difficulty: "MEDIUM" },
+      { name: "cache-strategies", description: "Browser caching patterns", href: "/challenge/cache-strategies", difficulty: "HARD" },
+      { name: "websocket", description: "Real-time communication", href: "/challenge/websocket", difficulty: "MEDIUM" },
+    ],
+  },
+  {
+    name: "CSS MASTERY",
+    description: "Advanced CSS techniques",
+    icon: "[样式]",
+    challenges: [
+      { name: "grid-layout", description: "CSS Grid deep dive", href: "/challenge/grid-layout", difficulty: "MEDIUM" },
+      { name: "flexbox-mastery", description: "Flexbox advanced patterns", href: "/challenge/flexbox-mastery", difficulty: "EASY" },
+      { name: "animation", description: "High-performance animations", href: "/challenge/animation", difficulty: "HARD" },
+      { name: "css-architecture", description: "Scalable CSS systems", href: "/challenge/css-architecture", difficulty: "EXPERT" },
+    ],
+  },
+  {
+    name: "TOOLING",
+    description: "Build tools & dev workflow",
+    icon: "[工具]",
+    challenges: [
+      { name: "webpack-basics", description: "Webpack configuration", href: "/challenge/webpack-basics", difficulty: "MEDIUM" },
+      { name: "vite-mastery", description: "Vite plugin development", href: "/challenge/vite-mastery", difficulty: "HARD" },
+      { name: "eslint-rules", description: "Custom ESLint rules", href: "/challenge/eslint-rules", difficulty: "EXPERT" },
+      { name: "ci-cd-pipeline", description: "GitHub Actions workflow", href: "/challenge/ci-cd-pipeline", difficulty: "MEDIUM" },
+    ],
+  },
+];
+
+const difficultyColors: Record<string, string> = {
+  EASY: "#33ff00",
+  MEDIUM: "#ffb000",
+  HARD: "#ff6600",
+  EXPERT: "#ff3333",
+};
 
 function splitIntoColumns<T>(arr: T[], numCols = 3): Array<T[]> {
   const cols: Array<T[]> = Array.from({ length: numCols }, () => []);
@@ -26,50 +106,9 @@ function splitIntoColumns<T>(arr: T[], numCols = 3): Array<T[]> {
   return cols;
 }
 
-const providers: Provider[] = [
-  {
-    name: "Google",
-    models: [
-      { name: "gemini-2.5-flash", description: "快速响应", href: "/provider/google/gemini-2.5-flash" },
-      { name: "gemini-3-pro", description: "高级模型", href: "/provider/google/gemini-3-pro" },
-      { name: "gemini-2.0-flash", description: "均衡选择", href: "/provider/google/gemini-2.0-flash" },
-    ],
-    settingsHref: "/provider/google/settings",
-  },
-  {
-    name: "Z AI",
-    models: [
-      { name: "z-ai-max", description: "旗舰模型", href: "/provider/z/z-ai-max" },
-      { name: "z-ai-pro", description: "专业模型", href: "/provider/z/z-ai-pro" },
-    ],
-    settingsHref: "/provider/z/settings",
-  },
-  {
-    name: "Doubao",
-    models: [
-      { name: "doubao-pro", description: "专业模型", href: "/provider/doubao/doubao-pro" },
-      { name: "doubao-lite", description: "轻量模型", href: "/provider/doubao/doubao-lite" },
-    ],
-    settingsHref: "/provider/doubao/settings",
-  },
-  {
-    name: "OpenAI",
-    models: [
-      { name: "gpt-5.3", description: "最新模型", href: "/provider/openai/gpt-5.3" },
-    ],
-    settingsHref: "/provider/openai/settings",
-  },
-  {
-    name: "Dreamina",
-    models: [
-      { name: "image-4.5", description: "图像模型", href: "/provider/dreamina/image-4.5" },
-      { name: "image-5.0-lite", description: "轻量图像", href: "/provider/dreamina/image-5.0-lite" },
-    ],
-    settingsHref: "/provider/dreamina/settings",
-  },
-];
-
 export default function Home() {
+  const totalChallenges = categories.reduce((acc, cat) => acc + cat.challenges.length, 0);
+
   return (
     <main className="min-h-screen">
       <div className="scanlines" />
@@ -78,26 +117,17 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="flex justify-between items-center h-14">
             <Link href="/" className="text-sm font-bold tracking-wider text-glow">
-              &gt; API TERMINAL_
+              &gt; AI ERA_
             </Link>
-            <div className="flex items-center gap-6 text-xs">
+            <div className="flex items-center gap-4 md:gap-6 text-xs">
               <Link href="/" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
                 [HOME]
               </Link>
-              <Link href="/provider/google" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
-                [GOOGLE]
+              <Link href="/challenge" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
+                [CHALLENGES]
               </Link>
-              <Link href="/provider/z" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
-                [Z AI]
-              </Link>
-              <Link href="/provider/doubao" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
-                [DOUBÃO]
-              </Link>
-              <Link href="/provider/openai" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
-                [OPENAI]
-              </Link>
-              <Link href="/provider/dreamina" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
-                [DREAMINA]
+              <Link href="/about" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
+                [ABOUT]
               </Link>
             </div>
           </div>
@@ -111,79 +141,80 @@ export default function Home() {
             <span className="animate-blink text-2xl md:text-3xl">█</span>
           </h1>
           <p className="text-sm md:text-base opacity-60 max-w-2xl mx-auto mb-6">
-            {`$ curl -X POST /api/test --data '{"provider": "google", "model": "gemini-2.0-flash"'}_`}
+            {`$ ./start_challenge.sh --category=all --difficulty=expert`}
           </p>
           <p className="text-xs md:text-sm opacity-40 max-w-xl mx-auto">
-            统一的 AI API 测试平台 / Unified AI API Testing Platform
+            前端开发者考验集合 / Frontend Developer Challenge Platform
           </p>
         </div>
 
-        {(() => {
-          const columns = splitIntoColumns(providers, 3);
-          return (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-              {columns.map((col, colIndex) => (
-                <div key={colIndex} className="grid gap-y-4">
-                  {col.map((provider) => (
-                    <div key={provider.name} className="card-terminal">
-                      <div className="card-terminal-header flex justify-between items-center">
-                        <span>+-- {provider.name.toUpperCase()} --+</span>
-                        <Link 
-                          href={provider.settingsHref} 
-                          className="text-[10px] hover:text-glow transition-all opacity-60 hover:opacity-100"
-                        >
-                          [SETTINGS]
-                        </Link>
-                      </div>
-                      <div className="flex flex-col">
-                        {provider.models.map((model) => (
-                          <Link
-                            key={model.name}
-                            href={model.href}
-                            className="w-full py-2 px-4 hover:bg-[#1f521f] hover:text-[#33ff00] focus:bg-[#1f521f] focus:text-[#33ff00] transition-all duration-150 group text-left block outline-none"
-                          >
-                            <span className="text-sm font-bold">
-                              &gt; {model.name}
-                            </span>
-                            <span className="text-xs opacity-60 ml-2">
-                              $ {model.description}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                      <div className="text-xs opacity-40 mt-2">
-                        [{provider.models.length} MODULES LOADED]
-                      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+          {categories.map((category) => (
+            <div key={category.name} className="card-terminal">
+              <div className="card-terminal-header flex justify-between items-center">
+                <span>{category.icon} {category.name}</span>
+                <span className="opacity-60">[{category.challenges.length}]</span>
+              </div>
+              <p className="text-xs opacity-60 mb-4 px-1">{category.description}</p>
+              <div className="flex flex-col">
+                {category.challenges.map((challenge) => (
+                  <Link
+                    key={challenge.name}
+                    href={challenge.href}
+                    className="w-full py-2 px-3 hover:bg-[#1f521f] hover:text-[#33ff00] focus:bg-[#1f521f] focus:text-[#33ff00] transition-all duration-150 group text-left block outline-none border-l-2 border-transparent hover:border-l-[#33ff00]"
+                    style={{ borderColor: "transparent" }}
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-bold">
+                        &gt; {challenge.name}
+                      </span>
+                      <span 
+                        className="text-[10px] px-1.5 py-0.5 font-bold"
+                        style={{ 
+                          color: difficultyColors[challenge.difficulty],
+                          border: `1px solid ${difficultyColors[challenge.difficulty]}`,
+                          opacity: 0.8
+                        }}
+                      >
+                        {challenge.difficulty}
+                      </span>
                     </div>
-                  ))}
-                </div>
-              ))}
+                    <span className="text-xs opacity-60 ml-0.5 block mt-0.5">
+                      $ {challenge.description}
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </div>
-          );
-        })()}
+          ))}
+        </div>
 
-        <div className="card-terminal mt-8">
+        <div className="card-terminal">
           <div className="card-terminal-header">
             +-- SYSTEM STATUS --+
           </div>
           <div className="p-4 text-sm font-mono">
             <div className="flex justify-between mb-1">
-              <span>PROVIDERS:</span>
-              <span>[OK] {providers.length}</span>
+              <span>CATEGORIES:</span>
+              <span>[OK] {categories.length}</span>
             </div>
             <div className="flex justify-between mb-1">
-              <span>MODELS:</span>
-              <span>[OK] {providers.reduce((acc, p) => acc + p.models.length, 0)}</span>
+              <span>CHALLENGES:</span>
+              <span>[OK] {totalChallenges}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between mb-1">
               <span>STATUS:</span>
               <span>[READY]</span>
+            </div>
+            <div className="flex justify-between mt-2 pt-2 border-t border-[#1f521f]">
+              <span>DIFFICULTY:</span>
+              <span>[EASY] [MEDIUM] [HARD] [EXPERT]</span>
             </div>
           </div>
         </div>
 
         <div className="mt-8 text-center text-xs opacity-40">
-          &gt; root@api-test:~# _
+          &gt; root@ai-era:~/challenges# _
           <span className="animate-blink">█</span>
         </div>
       </div>

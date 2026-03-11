@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Geist } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const jetbrains = JetBrains_Mono({
   variable: "--font-jetbrains",
@@ -8,8 +11,8 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI ERA",
-  description: "AI API 测试应用",
+  title: "AI ERA - 前端开发者考验集合",
+  description: "AI ERA - 前端开发者考验集合,包含AI相关题目和原理性题目",
 };
 
 export default function RootLayout({
@@ -18,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body
         className={`${jetbrains.variable} antialiased`}
         style={{ 
