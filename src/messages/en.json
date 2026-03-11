@@ -3,16 +3,115 @@
     "back": "Back",
     "home": "Home",
     "language": "Language",
-    "chinese": "Chinese",
-    "english": "English"
+    "chinese": "中文",
+    "english": "English",
+    "zh": "中文",
+    "en": "English"
   },
+  "language": "English",
   "header": {
     "title": "AI ERA - Frontend Developer Challenge Platform",
-    "description": "AI ERA - Frontend Developer Challenge Platform, includes AI and fundamentals challenges"
+    "description": "Frontend Developer Challenge Platform"
+  },
+  "nav": {
+    "home": "Home",
+    "challenges": "Challenges",
+    "about": "About"
+  },
+  "home": {
+    "subtitle": "$ ./start_challenge.sh --category=all --difficulty=expert"
+  },
+  "categories": {
+    "ai": {
+      "name": "AI CHALLENGES",
+      "description": "Modern AI tools & prompt engineering"
+    },
+    "frontend": {
+      "name": "FRONTEND PRINCIPLES",
+      "description": "Core frontend fundamentals"
+    },
+    "performance": {
+      "name": "PERFORMANCE",
+      "description": "Web performance optimization"
+    },
+    "network": {
+      "name": "NETWORK",
+      "description": "HTTP & network protocols"
+    },
+    "css": {
+      "name": "CSS MASTERY",
+      "description": "Advanced CSS techniques"
+    },
+    "tooling": {
+      "name": "TOOLING",
+      "description": "Build tools & dev workflow"
+    }
+  },
+  "difficulty": {
+    "EASY": "EASY",
+    "MEDIUM": "MEDIUM",
+    "HARD": "HARD",
+    "EXPERT": "EXPERT"
+  },
+  "system": {
+    "categories": "CATEGORIES",
+    "challenges": "CHALLENGES",
+    "status": "STATUS",
+    "ready": "READY",
+    "difficulty": "DIFFICULTY"
   },
   "provider": {
     "google": "Google AI",
     "doubao": "Doubao",
-    "z": "Z API"
+    "z": "Z AI"
+  },
+  "providerPage": {
+    "google": {
+      "title": "Google AI",
+      "description": "Google AI API Testing",
+      "geminiFlash": {
+        "title": "Gemini 2.5 Flash",
+        "description": "Google AI Flash Model - Fast Response"
+      },
+      "settings": {
+        "title": "GOOGLE CONFIG",
+        "description": "Configure Google AI API Settings"
+      }
+    },
+    "doubao": {
+      "title": "DOUBÃO",
+      "description": "Doubao AI API Testing",
+      "settings": {
+        "title": "DOUBÃO CONFIG",
+        "description": "Configure Doubao API Settings"
+      }
+    },
+    "z": {
+      "title": "Z AI",
+      "description": "Z AI API Testing",
+      "settings": {
+        "title": "Z AI CONFIG",
+        "description": "Configure Z AI API Settings"
+      }
+    }
+  },
+  "form": {
+    "apiKey": "API Key",
+    "enterApiKey": "Enter your API Key...",
+    "prompt": "Prompt",
+    "enterPrompt": "Enter your prompt...",
+    "model": "Model",
+    "temperature": "Temperature",
+    "maxTokens": "Max Tokens",
+    "submit": "Submit",
+    "response": "Response",
+    "error": "Error",
+    "save": "Save",
+    "saved": "Saved"
+  },
+  "chat": {
+    "title": "Chat",
+    "placeholder": "Type a message...",
+    "send": "Send"
   }
 }

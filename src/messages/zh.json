@@ -4,15 +4,114 @@
     "home": "首页",
     "language": "语言",
     "chinese": "中文",
-    "english": "英文"
+    "english": "English",
+    "zh": "中文",
+    "en": "English"
   },
+  "language": "中文",
   "header": {
     "title": "AI ERA - 前端开发者挑战平台",
-    "description": "AI ERA - 前端开发者挑战平台，包含AI和基础挑战"
+    "description": "前端开发者挑战平台"
+  },
+  "nav": {
+    "home": "首页",
+    "challenges": "挑战",
+    "about": "关于"
+  },
+  "home": {
+    "subtitle": "$ ./start_challenge.sh --category=all --difficulty=expert"
+  },
+  "categories": {
+    "ai": {
+      "name": "AI 挑战",
+      "description": "现代AI工具与提示工程"
+    },
+    "frontend": {
+      "name": "前端基础",
+      "description": "核心前端基础知识"
+    },
+    "performance": {
+      "name": "性能优化",
+      "description": "Web性能优化"
+    },
+    "network": {
+      "name": "网络",
+      "description": "HTTP与网络协议"
+    },
+    "css": {
+      "name": "CSS精通",
+      "description": "高级CSS技术"
+    },
+    "tooling": {
+      "name": "工具链",
+      "description": "构建工具与开发工作流"
+    }
+  },
+  "difficulty": {
+    "EASY": "简单",
+    "MEDIUM": "中等",
+    "HARD": "困难",
+    "EXPERT": "专家"
+  },
+  "system": {
+    "categories": "分类",
+    "challenges": "挑战",
+    "status": "状态",
+    "ready": "就绪",
+    "difficulty": "难度"
   },
   "provider": {
     "google": "Google AI",
     "doubao": "豆包",
-    "z": "Z API"
+    "z": "Z AI"
+  },
+  "providerPage": {
+    "google": {
+      "title": "Google AI",
+      "description": "Google AI API 测试",
+      "geminiFlash": {
+        "title": "Gemini 2.5 Flash",
+        "description": "Google AI Flash 模型 - 快速响应"
+      },
+      "settings": {
+        "title": "Google 配置",
+        "description": "配置 Google AI API 设置"
+      }
+    },
+    "doubao": {
+      "title": "豆包",
+      "description": "豆包 AI API 测试",
+      "settings": {
+        "title": "豆包配置",
+        "description": "配置豆包 API 设置"
+      }
+    },
+    "z": {
+      "title": "Z AI",
+      "description": "Z AI API 测试",
+      "settings": {
+        "title": "Z AI 配置",
+        "description": "配置 Z AI API 设置"
+      }
+    }
+  },
+  "form": {
+    "apiKey": "API Key",
+    "enterApiKey": "输入你的 API Key...",
+    "prompt": "提示词",
+    "enterPrompt": "输入你的提示词...",
+    "model": "模型",
+    "temperature": "Temperature",
+    "maxTokens": "最大Token数",
+    "submit": "提交",
+    "response": "响应",
+    "error": "错误",
+    "save": "保存",
+    "saved": "已保存"
+  },
+  "chat": {
+    "title": "对话",
+    "placeholder": "输入消息...",
+    "send": "发送"
   }
 }

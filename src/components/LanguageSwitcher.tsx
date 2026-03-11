@@ -1,57 +1,54 @@
 "use client";
 
-import { useLocale } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
+import { ClientOnly } from './ClientOnly';
+import { languageSwitcherTranslations } from '@/i18n/languageSwitcher';
 
 interface LanguageSwitcherProps {
   className?: string;
 }
 
 export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
-  const locale = useLocale();
-  const router = useRouter();
-
-  const languages = [
-    { code: 'zh', name: '中文' },
-    { code: 'en', name: 'English' }
-  ];
-
+  const pathname = usePathname();
+  
+  const currentLocale = pathname.startsWith('/en') ? 'en' : 'zh';
+  const t = languageSwitcherTranslations[currentLocale];
+  
   const handleLanguageChange = (newLocale: string) => {
-    // 使用cookie来设置语言
-    document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=31536000`;
-    router.refresh();
+    const pathWithoutLocale = pathname.replace(/^\/(zh|en)/, '');
+    window.location.href = `/${newLocale}${pathWithoutLocale || '/'}`;
   };
 
+  const languages = [
+    { code: 'zh', name: languageSwitcherTranslations.zh.switchTo.zh },
+    { code: 'en', name: languageSwitcherTranslations.zh.switchTo.en }
+  ];
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className={`flex items-center gap-2 text-sm text-[#33ff00] hover:text-glow transition-all px-2 py-1 border border-transparent hover:border-[#33ff00] ${className}`}
-        >
-          <Globe size={16} />
-          {languages.find(lang => lang.code === locale)?.name}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-[#0a0a0a] border border-[#1f521f] text-[#33ff00]">
-        {languages.map((lang) => (
-          <DropdownMenuItem
-            key={lang.code}
-            onClick={() => handleLanguageChange(lang.code)}
-            className="hover:bg-[#1f521f] cursor-pointer"
-          >
-            {lang.name}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <ClientOnly fallback={<span className={`flex items-center gap-1 text-xs opacity-70 ${className}`}><Globe size={14} /></span>}>
+      <DropdownMenu>
+        <DropdownMenuTrigger className={`flex items-center gap-1 text-xs hover:text-glow transition-all opacity-70 hover:opacity-100 cursor-pointer outline-none ${className}`}>
+          <Globe size={14} />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-[#0a0a0a] border border-[#1f521f] text-[#33ff00] min-w-[100px]">
+          {languages.map((lang) => (
+            <DropdownMenuItem
+              key={lang.code}
+              onClick={() => handleLanguageChange(lang.code)}
+              className="text-xs hover:bg-[#1f521f] cursor-pointer focus:bg-[#1f521f] focus:text-[#33ff00]"
+            >
+              {lang.name}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </ClientOnly>
   );
 }

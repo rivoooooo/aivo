@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from 'next-intl/server';
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface Challenge {
   name: string;
@@ -109,6 +110,10 @@ function splitIntoColumns<T>(arr: T[], numCols = 3): Array<T[]> {
 
 export default async function Home() {
   const t = await getTranslations('header');
+  const tNav = await getTranslations('nav');
+  const tSystem = await getTranslations('system');
+  const tDifficulty = await getTranslations('difficulty');
+  
   const totalChallenges = categories.reduce((acc, cat) => acc + cat.challenges.length, 0);
 
   return (
@@ -123,14 +128,15 @@ export default async function Home() {
             </Link>
             <div className="flex items-center gap-4 md:gap-6 text-xs">
               <Link href="/" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
-                [HOME]
+                [{tNav('home')}]
               </Link>
               <Link href="/challenge" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
-                [CHALLENGES]
+                [{tNav('challenges')}]
               </Link>
               <Link href="/about" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
-                [ABOUT]
+                [{tNav('about')}]
               </Link>
+              <LanguageSwitcher />
             </div>
           </div>
         </div>
@@ -197,20 +203,20 @@ export default async function Home() {
           </div>
           <div className="p-4 text-sm font-mono">
             <div className="flex justify-between mb-1">
-              <span>CATEGORIES:</span>
+              <span>{tSystem('categories')}:</span>
               <span>[OK] {categories.length}</span>
             </div>
             <div className="flex justify-between mb-1">
-              <span>CHALLENGES:</span>
+              <span>{tSystem('challenges')}:</span>
               <span>[OK] {totalChallenges}</span>
             </div>
             <div className="flex justify-between mb-1">
-              <span>STATUS:</span>
-              <span>[READY]</span>
+              <span>{tSystem('status')}:</span>
+              <span>[{tSystem('ready')}]</span>
             </div>
             <div className="flex justify-between mt-2 pt-2 border-t border-[#1f521f]">
-              <span>DIFFICULTY:</span>
-              <span>[EASY] [MEDIUM] [HARD] [EXPERT]</span>
+              <span>{tSystem('difficulty')}:</span>
+              <span>[{tDifficulty('EASY')}] [{tDifficulty('MEDIUM')}] [{tDifficulty('HARD')}] [{tDifficulty('EXPERT')}]</span>
             </div>
           </div>
         </div>
