@@ -1,6 +1,21 @@
 {
   "version": 1,
   "skills": {
+    "drizzle-orm": {
+      "source": "bobmatnyc/claude-mpm-skills",
+      "sourceType": "github",
+      "computedHash": "9aea7469d696c9b5fa54a84b7a92ea692872fb624fb028f866ab0f3deac84867"
+    },
+    "elysiajs": {
+      "source": "elysiajs/skills",
+      "sourceType": "github",
+      "computedHash": "55268e69a2c766ed67e56a0db57544f60cc52dba0c7f024a974baf965e525e1b"
+    },
+    "nextjs-app-router-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "d2f0a7065f7418fdb3ae88559f1f1426f40c26f2b5aebcd394797418d4bb3b04"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",
