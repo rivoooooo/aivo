@@ -14,6 +14,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "0.2.1",
+    "elysia": "^1.4.27",
     "lucide-react": "^0.577.0",
     "next": "16.1.6",
     "next-intl": "^4.8.3",
