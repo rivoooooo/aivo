@@ -1,4 +1,5 @@
-import { pgTable, text, timestamp, uuid, integer, uniqueIndex, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, integer, uniqueIndex, index, json } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 export const categories = pgTable('categories', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -24,7 +25,49 @@ export const challenges = pgTable('challenges', {
   slugLanguageIdx: index('idx_challenges_slug_language').on(table.slug, table.language),
 }));
 
+export interface ChallengeFile {
+  filename: string;
+  language: string;
+  content: string;
+}
+
+export const challengeResources = pgTable('challenge_resources', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  challengeId: uuid('challenge_id').notNull().references(() => challenges.id, { onDelete: 'cascade' }),
+  type: text('type').notNull(),
+  importSource: text('import_source'),
+  initCode: json('init_code').$type<ChallengeFile[]>(),
+  codeSource: json('code_source').$type<ChallengeFile[]>(),
+  displayOrder: integer('display_order').default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  challengeIdIdx: index('idx_challenge_resources_challenge_id').on(table.challengeId),
+  typeIdx: index('idx_challenge_resources_type').on(table.type),
+  challengeTypeUnique: uniqueIndex('challenge_resources_challenge_type_unique').on(table.challengeId, table.type),
+}));
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  challenges: many(challenges),
+}));
+
+export const challengesRelations = relations(challenges, ({ one, many }) => ({
+  category: one(categories, {
+    fields: [challenges.categoryId],
+    references: [categories.id],
+  }),
+  resources: many(challengeResources),
+}));
+
+export const challengeResourcesRelations = relations(challengeResources, ({ one }) => ({
+  challenge: one(challenges, {
+    fields: [challengeResources.challengeId],
+    references: [challenges.id],
+  }),
+}));
+
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
 export type Challenge = typeof challenges.$inferSelect;
 export type NewChallenge = typeof challenges.$inferInsert;
+export type ChallengeResource = typeof challengeResources.$inferSelect;
+export type NewChallengeResource = typeof challengeResources.$inferInsert;

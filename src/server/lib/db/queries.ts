@@ -1,5 +1,5 @@
 import { db } from '../db/index';
-import { categories, challenges } from '../db/schema';
+import { categories, challenges, challengeResources } from '../db/schema';
 import { eq, asc, and } from 'drizzle-orm';
 
 export interface CategoryWithChallenges {
@@ -9,6 +9,7 @@ export interface CategoryWithChallenges {
   icon: string;
   displayOrder: number;
   challenges: {
+    id: string;
     name: string;
     description: string | null;
     slug: string;
@@ -28,6 +29,7 @@ export async function getCategoriesWithChallenges(language: string = 'en'): Prom
   for (const category of allCategories) {
     const categoryChallenges = await db
       .select({
+        id: challenges.id,
         name: challenges.name,
         description: challenges.description,
         slug: challenges.slug,
@@ -73,6 +75,44 @@ export async function getChallengeBySlug(slug: string, language: string = 'en') 
   };
 }
 
+export async function getChallengeWithResources(slug: string, language: string = 'en', type?: string) {
+  const challenge = await getChallengeBySlug(slug, language);
+  if (!challenge) return null;
+
+  const resources = await db
+    .select()
+    .from(challengeResources)
+    .where(type 
+      ? and(
+          eq(challengeResources.challengeId, challenge.id),
+          eq(challengeResources.type, type)
+        )
+      : eq(challengeResources.challengeId, challenge.id)
+    );
+
+  return {
+    ...challenge,
+    resources,
+  };
+}
+
+export async function getChallengeResourcesByType(challengeId: string, type: string) {
+  return db
+    .select()
+    .from(challengeResources)
+    .where(and(
+      eq(challengeResources.challengeId, challengeId),
+      eq(challengeResources.type, type)
+    ));
+}
+
+export async function getAllChallengeResources(challengeId: string) {
+  return db
+    .select()
+    .from(challengeResources)
+    .where(eq(challengeResources.challengeId, challengeId));
+}
+
 export async function getChallengesByLanguage(language: string) {
   return db
     .select()
@@ -85,4 +125,11 @@ export async function getAvailableLanguages() {
     .selectDistinct({ language: challenges.language })
     .from(challenges);
   return result.map(r => r.language);
+}
+
+export async function getAvailableTypes() {
+  const result = await db
+    .selectDistinct({ type: challengeResources.type })
+    .from(challengeResources);
+  return result.map(r => r.type);
 }

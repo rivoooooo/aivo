@@ -3,8 +3,6 @@
 import { useState, use, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { getChallengeConfig, type ChallengeConfig } from '@/app/[locale]/challenge/[slug]/playground/utils';
-import PreviewFrame from '@/app/[locale]/challenge/[slug]/playground/components/PreviewFrame';
 
 const localeToLanguage: Record<string, string> = {
   'zh': 'zh',
@@ -19,6 +17,35 @@ const difficultyColors: Record<string, string> = {
   EXPERT: "var(--error)",
 };
 
+const typeLabels: Record<string, { zh: string; en: string }> = {
+  html: { zh: 'HTML', en: 'HTML' },
+  react: { zh: 'React', en: 'React' },
+  vue: { zh: 'Vue', en: 'Vue' },
+};
+
+interface ChallengeFile {
+  filename: string;
+  language: string;
+  content: string;
+}
+
+interface Resource {
+  id: string;
+  type: string;
+  importSource: string;
+  initCode: ChallengeFile[] | null;
+  codeSource: ChallengeFile[] | null;
+}
+
+interface ChallengeData {
+  id: string;
+  name: string;
+  description: string;
+  difficulty: string;
+  category?: { name: string };
+  resources: Resource[];
+}
+
 function ChallengeContent({ 
   slug, 
   locale 
@@ -28,20 +55,12 @@ function ChallengeContent({
 }) {
   const searchParams = useSearchParams();
   const lang = searchParams.get('lang') || localeToLanguage[locale] || 'en';
+  const typeParam = searchParams.get('type');
   
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [previewCode, setPreviewCode] = useState({
-    html: '',
-    css: '',
-    js: ''
-  });
-  const [challengeConfig, setChallengeConfig] = useState<ChallengeConfig | null>(null);
-  const [challengeData, setChallengeData] = useState<{
-    name: string;
-    description: string;
-    difficulty: string;
-    category?: { name: string };
-  } | null>(null);
+  const [challengeData, setChallengeData] = useState<ChallengeData | null>(null);
+  const [selectedType, setSelectedType] = useState<string>(typeParam || '');
+  const [selectedFileIndex, setSelectedFileIndex] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,6 +73,10 @@ function ChallengeContent({
         }
         const data = await response.json();
         setChallengeData(data);
+        if (data.resources && data.resources.length > 0 && !selectedType) {
+          setSelectedType(data.resources[0].type);
+          setSelectedFileIndex(0);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load challenge');
       } finally {
@@ -65,15 +88,11 @@ function ChallengeContent({
   }, [slug, lang]);
 
   useEffect(() => {
-    if (slug && !challengeConfig) {
-      getChallengeConfig(slug).then(config => {
-        if (config) {
-          setChallengeConfig(config);
-          setPreviewCode(config.defaultCode);
-        }
-      });
+    if (typeParam && typeParam !== selectedType) {
+      setSelectedType(typeParam);
+      setSelectedFileIndex(0);
     }
-  }, [slug, challengeConfig]);
+  }, [typeParam]);
 
   if (loading) {
     return (
@@ -103,10 +122,43 @@ function ChallengeContent({
     );
   }
 
-  const isPlayground = !!challengeConfig;
+  const currentResource = challengeData.resources.find(r => r.type === selectedType);
+  const availableTypes = challengeData.resources.map(r => r.type);
+  const currentFiles = currentResource?.initCode || currentResource?.codeSource || [];
+  const currentFile = currentFiles[selectedFileIndex];
 
   const handleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
+  };
+
+  const renderPreview = (): string => {
+    if (!currentResource?.codeSource) return '';
+    
+    const htmlFile = currentResource.codeSource.find(f => f.filename.endsWith('.html'));
+    if (htmlFile) {
+      return htmlFile.content;
+    }
+    
+    const jsxFile = currentResource.codeSource.find(f => f.filename.endsWith('.jsx') || f.filename.endsWith('.js'));
+    if (jsxFile) {
+      return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>body { font-family: Arial, sans-serif; padding: 20px; }</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://esm.sh/react@19/umd/react.development.js"></script>
+  <script src="https://esm.sh/react-dom@19/umd/react-dom.development.js"></script>
+  <script type="module">
+${jsxFile.content.replace(/import .+ from .+/g, '').replace(/export default/g, '')}
+  </script>
+</body>
+</html>`;
+    }
+    
+    return currentResource.codeSource[0]?.content || '';
   };
 
   return (
@@ -153,38 +205,87 @@ function ChallengeContent({
             </div>
           </div>
 
-          {isPlayground && (
-            <div className="card-terminal flex-1 overflow-auto">
+          {availableTypes.length > 0 && (
+            <div className="card-terminal mb-4">
               <div className="card-terminal-header shrink-0">
-                +-- 挑战介绍 --+
+                +-- 选择技术栈 --+
               </div>
-              <div className="p-4 space-y-4">
-                <div>
-                  <h3 className="text-sm font-bold text-[var(--primary)] mb-2">概述</h3>
-                  <p className="text-sm opacity-80">学习如何使用这个挑战的相关功能</p>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-bold text-[var(--primary)] mb-2">学习目标</h3>
-                  <ul className="space-y-1">
-                    <li className="text-sm opacity-80 flex items-start gap-2">
-                      <span className="text-[var(--primary)]">▸</span>
-                      掌握相关技能
-                    </li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-bold text-[var(--primary)] mb-2">提示</h3>
-                  <ul className="space-y-1">
-                    <li className="text-sm opacity-60 flex items-start gap-2">
-                      <span className="text-[var(--warning)]">💡</span>
-                      参考官方文档
-                    </li>
-                  </ul>
+              <div className="p-4">
+                <div className="flex flex-wrap gap-2">
+                  {availableTypes.map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => {
+                        setSelectedType(type);
+                        setSelectedFileIndex(0);
+                      }}
+                      className={`px-3 py-1.5 text-sm font-bold transition-all ${
+                        selectedType === type 
+                          ? 'bg-[var(--primary)] text-[var(--primary-foreground)]' 
+                          : 'bg-[var(--muted)] hover:bg-[var(--accent)]'
+                      }`}
+                    >
+                      {typeLabels[type]?.[lang as 'zh' | 'en'] || type}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
+          )}
+
+          {currentResource && (
+            <>
+              {currentResource.importSource && (
+                <div className="card-terminal mb-4">
+                  <div className="card-terminal-header shrink-0">
+                    +-- 依赖引入 --+
+                  </div>
+                  <div className="p-4">
+                    <pre className="text-xs bg-[var(--background)] p-3 rounded overflow-x-auto">
+                      <code className="text-[var(--primary)]">{currentResource.importSource}</code>
+                    </pre>
+                  </div>
+                </div>
+              )}
+
+              {currentFiles.length > 0 && (
+                <>
+                  <div className="card-terminal mb-4">
+                    <div className="card-terminal-header shrink-0">
+                      +-- 文件列表 --+
+                    </div>
+                    <div className="p-4">
+                      <div className="flex flex-wrap gap-2">
+                        {currentFiles.map((file, index) => (
+                          <button
+                            key={file.filename}
+                            onClick={() => setSelectedFileIndex(index)}
+                            className={`px-3 py-1.5 text-xs font-bold transition-all ${
+                              selectedFileIndex === index 
+                                ? 'bg-[var(--primary)] text-[var(--primary-foreground)]' 
+                                : 'bg-[var(--muted)] hover:bg-[var(--accent)]'
+                            }`}
+                          >
+                            {file.filename}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="card-terminal flex-1 overflow-auto">
+                    <div className="card-terminal-header shrink-0">
+                      +-- 代码编辑器: {currentFile?.filename} --+
+                    </div>
+                    <div className="p-4">
+                      <pre className="text-xs bg-[var(--background)] p-3 rounded overflow-x-auto whitespace-pre-wrap">
+                        <code>{currentFile?.content || ''}</code>
+                      </pre>
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
           )}
 
           <div className="mt-4 md:mt-6 flex flex-wrap gap-4 justify-center lg:justify-start">
@@ -197,7 +298,7 @@ function ChallengeContent({
           </div>
         </div>
 
-        {isPlayground && (
+        {currentResource && currentFiles.length > 0 && (
           <div className={`${isFullscreen ? 'w-full lg:w-2/3' : 'w-full'} flex flex-col`}>
             <div className="card-terminal flex-1 min-h-[400px] md:min-h-[500px] lg:min-h-[600px] flex flex-col">
               <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] shrink-0">
@@ -206,7 +307,7 @@ function ChallengeContent({
                     实时预览
                   </span>
                   <span className="text-xs text-[var(--muted-foreground)]">
-                    {challengeConfig ? challengeConfig.title : 'Loading...'}
+                    {typeLabels[currentResource.type]?.[lang as 'zh' | 'en'] || currentResource.type}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -217,7 +318,7 @@ function ChallengeContent({
                     {isFullscreen ? '[退出全屏]' : '[全屏显示]'}
                   </button>
                   <Link
-                    href={`/${locale}/challenge/${slug}/playground`}
+                    href={`/${locale}/challenge/${slug}/playground?type=${selectedType}`}
                     className="btn-terminal text-xs px-3 py-1.5"
                   >
                     [前往 Playground]
@@ -225,14 +326,13 @@ function ChallengeContent({
                 </div>
               </div>
               
-              <div className="flex-1 min-h-0">
-                {challengeConfig ? (
-                  <PreviewFrame code={previewCode} dependencies={challengeConfig.dependencies} />
-                ) : (
-                  <div className="h-full flex items-center justify-center">
-                    <div className="text-[var(--primary)] animate-blink">Loading preview...</div>
-                  </div>
-                )}
+              <div className="flex-1 min-h-0 p-4 bg-white">
+                <iframe
+                  srcDoc={renderPreview()}
+                  className="w-full h-full border-0"
+                  sandbox="allow-scripts allow-modals"
+                  title="Preview"
+                />
               </div>
             </div>
           </div>

@@ -8,6 +8,20 @@
       "when": 1773301909041,
       "tag": "0000_closed_typhoid_mary",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773304260751,
+      "tag": "0001_glossy_vance_astro",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773305133136,
+      "tag": "0002_dusty_gauntlet",
+      "breakpoints": true
     }
   ]
 }
