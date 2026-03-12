@@ -17,9 +17,13 @@ export default function ProviderLayout({ children }: ProviderLayoutProps) {
 
   const { isProviderPage, title, description } = useMemo(() => {
     const segments = pathname.split("/").filter(Boolean);
-    if (segments[0] === "provider" && segments[1]) {
-      const provider = segments[1];
-      const slug = segments[2] || "";
+    const localeIndex = segments[0];
+    const isLocale = localeIndex === 'en' || localeIndex === 'zh';
+    const startIdx = isLocale ? 1 : 0;
+    
+    if (segments[startIdx] === "provider" && segments[startIdx + 1]) {
+      const provider = segments[startIdx + 1];
+      const slug = segments[startIdx + 2] || "";
       const config = providerConfig[provider];
 
       if (config) {
@@ -47,15 +51,15 @@ export default function ProviderLayout({ children }: ProviderLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       <div className="scanlines" />
-      <nav className="sticky top-0 p-2 left-0 right-0 z-50 bg-[#0a0a0a] border-b border-[#1f521f]">
+      <nav className="sticky top-0 p-2 left-0 right-0 z-50 bg-background border-b border-border">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <button
               onClick={handleGoBack}
               type="button"
-              className="flex items-center gap-2 text-sm text-[#33ff00] hover:text-glow transition-all px-2 py-1 border border-transparent hover:border-[#33ff00] cursor-pointer"
+              className="flex items-center gap-2 text-sm text-foreground hover:text-glow transition-all px-2 py-1 border border-transparent hover:border-primary cursor-pointer"
             >
               &lt; {t('back')}
             </button>
@@ -66,8 +70,8 @@ export default function ProviderLayout({ children }: ProviderLayoutProps) {
 
             <div className="flex items-center gap-4">
               <Link
-                href="/"
-                className="text-sm text-[#33ff00] hover:text-glow transition-all px-2 py-1 border border-transparent hover:border-[#33ff00]"
+                href="/en"
+                className="text-sm text-foreground hover:text-glow transition-all px-2 py-1 border border-transparent hover:border-primary"
               >
                 {t('home')}
               </Link>

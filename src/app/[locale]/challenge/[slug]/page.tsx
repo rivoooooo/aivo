@@ -55,7 +55,7 @@ async function async2() {
 console.log('4');
 async1();
 console.log('5');`,
-        options: ["4 1 3 5 2", "1 3 4 5 2", "4 1 5 3 2", "4 5 1 3 2"],
+        options: ["4 1 3 5 2", "1 3 4 5 2", "4 5 1 3 2", "4 1 5 3 2"],
         answer: "4 1 3 5 2"
       }
     ]
@@ -94,10 +94,10 @@ console.log('5');`,
 };
 
 const difficultyColors: Record<string, string> = {
-  EASY: "#33ff00",
-  MEDIUM: "#ffb000",
-  HARD: "#ff6600",
-  EXPERT: "#ff3333",
+  EASY: "var(--success)",
+  MEDIUM: "var(--warning)",
+  HARD: "var(--chart-3)",
+  EXPERT: "var(--error)",
 };
 
 export default function ChallengePage({ params }: { params: { slug: string } }) {
@@ -107,14 +107,14 @@ export default function ChallengePage({ params }: { params: { slug: string } }) 
     return (
       <main className="min-h-screen">
         <div className="scanlines" />
-        <nav className="border-b border-[#1f521f] bg-[#0a0a0a]">
+        <nav className="border-b border-border bg-background">
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <div className="flex justify-between items-center h-14">
-              <Link href="/" className="text-sm font-bold tracking-wider text-glow">
+              <Link href="/en" className="text-sm font-bold tracking-wider text-glow">
                 &gt; AI ERA_
               </Link>
               <div className="flex items-center gap-4 md:gap-6 text-xs">
-                <Link href="/" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
+                <Link href="/en" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
                   [HOME]
                 </Link>
               </div>
@@ -128,8 +128,8 @@ export default function ChallengePage({ params }: { params: { slug: string } }) 
             </div>
             <div className="p-8 text-center">
               <p className="text-lg mb-4">Challenge not found</p>
-              <Link href="/" className="btn-terminal inline-block">
-                [BACK TO HOME]
+              <Link href="/en/challenge" className="btn-terminal inline-block">
+                [BACK TO CHALLENGES]
               </Link>
             </div>
           </div>
@@ -142,18 +142,18 @@ export default function ChallengePage({ params }: { params: { slug: string } }) 
     <main className="min-h-screen">
       <div className="scanlines" />
       
-      <nav className="border-b border-[#1f521f] bg-[#0a0a0a]">
+      <nav className="border-b border-border bg-background">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="flex justify-between items-center h-14">
-            <Link href="/" className="text-sm font-bold tracking-wider text-glow">
+            <Link href="/en" className="text-sm font-bold tracking-wider text-glow">
               &gt; AI ERA_
             </Link>
             <div className="flex items-center gap-4 md:gap-6 text-xs">
-              <Link href="/" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
+              <Link href="/en" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
                 [HOME]
               </Link>
-              <Link href="/" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
-                [BACK]
+              <Link href="/en/challenge" className="hover:text-glow transition-all opacity-70 hover:opacity-100">
+                [CHALLENGES]
               </Link>
             </div>
           </div>
@@ -193,7 +193,7 @@ export default function ChallengePage({ params }: { params: { slug: string } }) 
                 </p>
                 
                 {q.code && (
-                  <pre className="bg-[#0a0a0a] border border-[#1f521f] p-4 mb-4 text-xs md:text-sm overflow-x-auto">
+                  <pre className="bg-background border border-border p-4 mb-4 text-xs md:text-sm overflow-x-auto">
                     <code>{q.code}</code>
                   </pre>
                 )}
@@ -203,12 +203,12 @@ export default function ChallengePage({ params }: { params: { slug: string } }) 
                     {q.options.map((option, optIndex) => (
                       <label 
                         key={optIndex}
-                        className="flex items-start gap-3 p-3 border border-[#1f521f] hover:bg-[#1f521f] hover:text-[#33ff00] cursor-pointer transition-all"
+                        className="flex items-start gap-3 p-3 border border-border hover:bg-muted hover:text-foreground cursor-pointer transition-all"
                       >
                         <input 
                           type="radio" 
                           name={`question-${q.id}`}
-                          className="mt-0.5 accent-[#33ff00]"
+                          className="mt-0.5 accent-primary"
                         />
                         <span className="text-sm">{option}</span>
                       </label>
