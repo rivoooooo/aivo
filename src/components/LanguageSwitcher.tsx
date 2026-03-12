@@ -7,23 +7,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
 import { ClientOnly } from './ClientOnly';
 import { languageSwitcherTranslations } from '@/i18n/languageSwitcher';
 
-interface LanguageSwitcherProps {
-  className?: string;
-}
-
-export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
+export function LanguageSwitcher() {
   const pathname = usePathname();
-  
-  const currentLocale = pathname.startsWith('/en') ? 'en' : pathname.startsWith('/ja') ? 'ja' : 'zh';
-  const t = languageSwitcherTranslations[currentLocale];
   
   const handleLanguageChange = (newLocale: string) => {
     const pathWithoutLocale = pathname.replace(/^\/(zh|en|ja)/, '');
-    window.location.href = `/${newLocale}${pathWithoutLocale || '/'}`;
+    window.location.assign(`/${newLocale}${pathWithoutLocale || '/'}`);
   };
 
   const languages = [
@@ -33,17 +27,19 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
   ];
 
   return (
-    <ClientOnly fallback={<span className={`flex items-center gap-1 text-xs opacity-70 ${className}`}><Globe size={14} /></span>}>
+    <ClientOnly fallback={<Button variant="ghost" size="icon" className="relative"><Globe className="absolute inset-0 m-auto size-4" /><span className="sr-only">Language</span></Button>}>
       <DropdownMenu>
-        <DropdownMenuTrigger className={`flex items-center gap-1 text-xs hover:text-glow transition-all opacity-70 hover:opacity-100 cursor-pointer outline-none ${className}`}>
-          <Globe size={14} />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="bg-[#0a0a0a] border border-[#1f521f] text-[#33ff00] min-w-[100px]">
+        <DropdownMenuTrigger render={
+          <Button variant="ghost" size="icon" className="relative">
+            <Globe className="absolute inset-0 m-auto size-4" />
+            <span className="sr-only">Language</span>
+          </Button>
+        } />
+        <DropdownMenuContent align="end">
           {languages.map((lang) => (
             <DropdownMenuItem
               key={lang.code}
               onClick={() => handleLanguageChange(lang.code)}
-              className="text-xs hover:bg-[#1f521f] cursor-pointer focus:bg-[#1f521f] focus:text-[#33ff00]"
             >
               {lang.name}
             </DropdownMenuItem>

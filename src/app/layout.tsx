@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import { JetBrains_Mono, Geist } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { CommandPaletteWrapper } from '@/components/command-palette';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { getLocale } from 'next-intl/server';
 import { ThemeProvider } from '@/components/theme-provider';
+import { AppShell } from '@/components/app-shell';
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -43,8 +43,9 @@ export default async function RootLayout({
           disableTransitionOnChange={false}
         >
           <NextIntlClientProvider messages={messages}>
-            {children}
-            <CommandPaletteWrapper />
+            <AppShell>
+              {children}
+            </AppShell>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
