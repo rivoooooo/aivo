@@ -2,11 +2,9 @@ import type { Metadata } from 'next';
 import { JetBrains_Mono, Geist } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 import { getLocale } from 'next-intl/server';
-import { ThemeProvider } from '@/components/theme-provider';
-import { AppShell } from '@/components/app-shell';
+import { getMessages } from 'next-intl/server';
+import Providers from '@/components/providers';
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -36,18 +34,9 @@ export default async function RootLayout({
           fontFamily: "var(--font-jetbrains), monospace",
         }}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange={false}
-        >
-          <NextIntlClientProvider messages={messages}>
-            <AppShell>
-              {children}
-            </AppShell>
-          </NextIntlClientProvider>
-        </ThemeProvider>
+        <Providers messages={messages}>
+          {children}
+        </Providers>
       </body>
     </html>
   );
