@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/ui/empty';
 export default function PlaygroundPage() {
   const params = useParams();
   const slug = params?.slug as string;
+  const locale = params?.locale as string || 'en';
   
   const [challenge, setChallenge] = useState<ChallengeConfig | null>(null);
   const [code, setCode] = useState<ChallengeFile[]>([]);
@@ -27,10 +28,12 @@ export default function PlaygroundPage() {
         return;
       }
 
-      getChallengeConfig(slug).then(config => {
-        setChallenge(config);
-        setCode(config?.initCode || []);
-        setLoading(false);
+      getChallengeConfig(slug, locale).then(config => {
+        if (mounted) {
+          setChallenge(config);
+          setCode(config?.initCode || []);
+          setLoading(false);
+        }
       });
     };
 
@@ -39,7 +42,7 @@ export default function PlaygroundPage() {
     return () => {
       mounted = false;
     };
-  }, [slug]);
+  }, [slug, locale]);
 
   const handleCodeChange = useCallback((content: string) => {
     if (challenge && code[activeFileIndex]) {

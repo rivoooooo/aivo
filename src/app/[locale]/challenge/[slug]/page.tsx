@@ -4,6 +4,8 @@ import { useState, use, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { EmptyState } from '@/components/ui/empty';
+import { LoadingPage, LoadingSkeletonCard } from '@/components/ui/loading';
+import { useChallenge } from '@/lib/hooks/useChallenge';
 
 const localeToLanguage: Record<string, string> = {
   'zh': 'zh',
@@ -24,29 +26,6 @@ const typeLabels: Record<string, { zh: string; en: string }> = {
   vue: { zh: 'Vue', en: 'Vue' },
 };
 
-interface ChallengeFile {
-  filename: string;
-  language: string;
-  content: string;
-}
-
-interface Resource {
-  id: string;
-  type: string;
-  importSource: string;
-  initCode: ChallengeFile[] | null;
-  codeSource: ChallengeFile[] | null;
-}
-
-interface ChallengeData {
-  id: string;
-  name: string;
-  description: string;
-  difficulty: string;
-  category?: { name: string };
-  resources: Resource[];
-}
-
 function ChallengeContent({ 
   slug, 
   locale 
@@ -59,34 +38,19 @@ function ChallengeContent({
   const typeParam = searchParams.get('type');
   
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [challengeData, setChallengeData] = useState<ChallengeData | null>(null);
   const [selectedType, setSelectedType] = useState<string>(typeParam || '');
   const [selectedFileIndex, setSelectedFileIndex] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchChallenge() {
-      try {
-        const response = await fetch(`/api/challenges/${slug}?lang=${lang}`);
-        if (!response.ok) {
-          throw new Error('Challenge not found');
-        }
-        const data = await response.json();
-        setChallengeData(data);
-        if (data.resources && data.resources.length > 0 && !selectedType) {
-          setSelectedType(data.resources[0].type);
-          setSelectedFileIndex(0);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load challenge');
-      } finally {
-        setLoading(false);
-      }
+  const { data: challengeData, loading, error, refetch, retryCount } = useChallenge(
+    slug,
+    lang,
+    typeParam || undefined,
+    {
+      retry: 3,
+      retryDelay: 1000,
+      timeout: 10000,
     }
-    
-    fetchChallenge();
-  }, [slug, lang]);
+  );
 
   useEffect(() => {
     if (typeParam && typeParam !== selectedType) {
@@ -94,6 +58,13 @@ function ChallengeContent({
       setSelectedFileIndex(0);
     }
   }, [typeParam]);
+
+  useEffect(() => {
+    if (challengeData?.resources && challengeData.resources.length > 0 && !selectedType) {
+      setSelectedType(challengeData.resources[0].type);
+      setSelectedFileIndex(0);
+    }
+  }, [challengeData]);
 
   const hasName = !!challengeData?.name;
   const hasDescription = !!challengeData?.description;
@@ -108,23 +79,36 @@ function ChallengeContent({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--background)] p-4 md:p-8 flex items-center justify-center">
-        <div className="text-[var(--primary)] animate-blink">Loading...</div>
+      <div className="min-h-screen bg-[var(--background)] p-4 md:p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-6">
+            <LoadingSkeletonCard className="mb-4" />
+            <LoadingSkeletonCard />
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error || !challengeData) {
     return (
-      <div className="min-h-screen bg-[var(--background)] p-4 md:p-8 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--background)] p-4 md:p-8 flex flex-col items-center justify-center gap-4">
         <EmptyState
           variant="error"
           title="Challenge Not Found"
           description={error || "The challenge you're looking for doesn't exist or couldn't be loaded."}
           action={
-            <Link href={`/${locale}/challenge`} className="btn-terminal text-sm px-4 py-2">
-              [BACK TO CHALLENGES]
-            </Link>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <button 
+                onClick={() => refetch()} 
+                className="btn-terminal text-sm px-4 py-2"
+              >
+                [RETRY {retryCount > 0 && `(${retryCount})`}]
+              </button>
+              <Link href={`/${locale}/challenge`} className="btn-terminal text-sm px-4 py-2">
+                [BACK TO CHALLENGES]
+              </Link>
+            </div>
           }
         />
       </div>
@@ -133,6 +117,15 @@ function ChallengeContent({
 
   const handleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
+  };
+
+  const handleTypeChange = (type: string) => {
+    setSelectedType(type);
+    setSelectedFileIndex(0);
+  };
+
+  const handleFileSelect = (index: number) => {
+    setSelectedFileIndex(index);
   };
 
   const renderPreview = (): string => {
@@ -240,10 +233,7 @@ ${jsxFile.content.replace(/import .+ from .+/g, '').replace(/export default/g, '
                       {availableTypes.map((type) => (
                         <button
                           key={type}
-                          onClick={() => {
-                            setSelectedType(type);
-                            setSelectedFileIndex(0);
-                          }}
+                          onClick={() => handleTypeChange(type)}
                           className={`px-3 py-1.5 text-sm font-bold transition-all ${
                             selectedType === type 
                               ? 'bg-[var(--primary)] text-[var(--primary-foreground)]' 
@@ -293,7 +283,7 @@ ${jsxFile.content.replace(/import .+ from .+/g, '').replace(/export default/g, '
                             {currentFiles.map((file, index) => (
                               <button
                                 key={file.filename}
-                                onClick={() => setSelectedFileIndex(index)}
+                                onClick={() => handleFileSelect(index)}
                                 className={`px-3 py-1.5 text-xs font-bold transition-all ${
                                   selectedFileIndex === index 
                                     ? 'bg-[var(--primary)] text-[var(--primary-foreground)]' 
@@ -426,11 +416,7 @@ export default function ChallengePage({ params }: { params: Promise<{ slug: stri
   const { slug, locale } = resolvedParams;
 
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-[var(--background)] p-4 md:p-8 flex items-center justify-center">
-        <div className="text-[var(--primary)] animate-blink">Loading...</div>
-      </div>
-    }>
+    <Suspense fallback={<LoadingPage text="Loading page..." />}>
       <ChallengeContent slug={slug} locale={locale} />
     </Suspense>
   );

@@ -22,21 +22,37 @@ export interface ChallengeConfig {
   importSource: string;
 }
 
-export async function getChallengeConfig(slug: string): Promise<ChallengeConfig | null> {
-  const { getChallengeWithResources } = await import('@/server/lib/db/queries');
+async function fetchChallengeApi(slug: string, lang: string = 'en'): Promise<any> {
+  const response = await fetch(`/api/challenges/${slug}?lang=${lang}`);
   
-  const challenge = await getChallengeWithResources(slug, 'en');
+  if (!response.ok) {
+    if (response.status === 404) {
+      return null;
+    }
+    throw new Error(`Failed to fetch challenge: ${response.statusText}`);
+  }
   
-  if (!challenge) return null;
+  return response.json();
+}
 
-  const resource = challenge.resources?.[0];
-  
-  return {
-    id: challenge.id,
-    title: challenge.name,
-    description: challenge.description || '',
-    initCode: resource?.initCode || [],
-    codeSource: resource?.codeSource || [],
-    importSource: resource?.importSource || '',
-  };
+export async function getChallengeConfig(slug: string, lang: string = 'en'): Promise<ChallengeConfig | null> {
+  try {
+    const challenge = await fetchChallengeApi(slug, lang);
+    
+    if (!challenge) return null;
+    
+    const resource = challenge.resources?.[0];
+    
+    return {
+      id: challenge.id,
+      title: challenge.name,
+      description: challenge.description || '',
+      initCode: resource?.initCode || [],
+      codeSource: resource?.codeSource || [],
+      importSource: resource?.importSource || '',
+    };
+  } catch (error) {
+    console.error('Error fetching challenge config:', error);
+    return null;
+  }
 }

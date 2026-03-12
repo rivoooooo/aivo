@@ -1,6 +1,6 @@
 import { db } from '../db/index';
 import { categories, challenges, challengeResources } from '../db/schema';
-import { eq, asc, and } from 'drizzle-orm';
+import { eq, asc, and, like, or, sql } from 'drizzle-orm';
 
 export interface CategoryWithChallenges {
   id: string;
@@ -16,6 +16,45 @@ export interface CategoryWithChallenges {
     difficulty: string;
     language: string;
   }[];
+}
+
+export interface ChallengesListParams {
+  language?: string;
+  category?: string;
+  difficulty?: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
+export interface ChallengesListResult {
+  data: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    difficulty: string;
+    language: string;
+    categoryId: string;
+    category?: {
+      id: string;
+      name: string;
+      icon: string;
+    };
+  }[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export async function getAllCategories() {
+  return db
+    .select()
+    .from(categories)
+    .orderBy(asc(categories.displayOrder));
 }
 
 export async function getCategoriesWithChallenges(language: string = 'en'): Promise<CategoryWithChallenges[]> {
@@ -96,6 +135,117 @@ export async function getChallengeWithResources(slug: string, language: string =
   };
 }
 
+export async function getChallengesList(params: ChallengesListParams): Promise<ChallengesListResult> {
+  const {
+    language = 'en',
+    category,
+    difficulty,
+    page = 1,
+    limit = 10,
+    search,
+  } = params;
+
+  const conditions: any[] = [eq(challenges.language, language)];
+
+  if (category) {
+    const categoryResult = await db
+      .select({ id: categories.id })
+      .from(categories)
+      .where(eq(categories.name, category))
+      .limit(1);
+    
+    if (categoryResult.length > 0) {
+      conditions.push(eq(challenges.categoryId, categoryResult[0].id));
+    }
+  }
+
+  if (difficulty) {
+    conditions.push(eq(challenges.difficulty, difficulty));
+  }
+
+  if (search) {
+    conditions.push(
+      or(
+        like(challenges.name, `%${search}%`),
+        like(challenges.description, `%${search}%`)
+      )
+    );
+  }
+
+  const whereCondition = conditions.length > 1 ? and(...conditions) : conditions[0];
+
+  const offset = (page - 1) * limit;
+
+  const baseQuery = db
+    .select({
+      id: challenges.id,
+      name: challenges.name,
+      slug: challenges.slug,
+      description: challenges.description,
+      difficulty: challenges.difficulty,
+      language: challenges.language,
+      categoryId: challenges.categoryId,
+    })
+    .from(challenges)
+    .$dynamic();
+
+  const countQuery = db
+    .select({ count: sql<number>`count(*)` })
+    .from(challenges)
+    .$dynamic();
+
+  const [data, countResult] = await Promise.all([
+    whereCondition 
+      ? baseQuery.where(whereCondition).orderBy(asc(challenges.createdAt)).limit(limit).offset(offset)
+      : baseQuery.orderBy(asc(challenges.createdAt)).limit(limit).offset(offset),
+    whereCondition 
+      ? countQuery.where(whereCondition)
+      : countQuery,
+  ]);
+
+  const total = countResult[0]?.count ?? 0;
+  const totalPages = Math.ceil(total / limit);
+
+  const dataWithCategory = await Promise.all(
+    data.map(async (item) => {
+      const categoryResult = await db
+        .select({
+          id: categories.id,
+          name: categories.name,
+          icon: categories.icon,
+        })
+        .from(categories)
+        .where(eq(categories.id, item.categoryId))
+        .limit(1);
+
+      return {
+        ...item,
+        category: categoryResult[0] || null,
+      };
+    })
+  );
+
+  return {
+    data: dataWithCategory,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages,
+    },
+  };
+}
+
+export async function getChallengeResourcesByChallengeSlug(slug: string, language: string = 'en') {
+  const challenge = await getChallengeBySlug(slug, language);
+  if (!challenge) return [];
+
+  return db
+    .select()
+    .from(challengeResources)
+    .where(eq(challengeResources.challengeId, challenge.id));
+}
+
 export async function getChallengeResourcesByType(challengeId: string, type: string) {
   return db
     .select()
@@ -132,4 +282,11 @@ export async function getAvailableTypes() {
     .selectDistinct({ type: challengeResources.type })
     .from(challengeResources);
   return result.map(r => r.type);
+}
+
+export async function getAvailableDifficulties() {
+  const result = await db
+    .selectDistinct({ difficulty: challenges.difficulty })
+    .from(challenges);
+  return result.map(r => r.difficulty);
 }
