@@ -6,6 +6,7 @@ import { ChallengeFile } from '../utils';
 interface PreviewFrameProps {
   codeSource: ChallengeFile[];
   importSource: string;
+  sandboxType: 'html' | 'javascript' | 'react' | 'vue';
 }
 
 function buildImportMap(importSource: string): string {
@@ -33,35 +34,72 @@ function buildImportMap(importSource: string): string {
   return JSON.stringify({ imports }, null, 2);
 }
 
-function generateHtmlDocument(codeSource: ChallengeFile[], importSource: string): string {
+function generateHtmlDocument(codeSource: ChallengeFile[], importSource: string, sandboxType: string): string {
   const importMap = buildImportMap(importSource);
   
   const htmlFile = codeSource.find(f => f.language === 'html' || f.filename.endsWith('.html'));
   const jsFile = codeSource.find(f => f.language === 'javascript' || f.filename.endsWith('.js') || f.filename.endsWith('.jsx'));
   const cssFile = codeSource.find(f => f.language === 'css' || f.filename.endsWith('.css'));
+  const vueFile = codeSource.find(f => f.language === 'vue' || f.filename.endsWith('.vue'));
+  const reactFile = codeSource.find(f => f.language === 'react' || f.filename.endsWith('.jsx') || f.filename.endsWith('.tsx'));
   
   const htmlContent = htmlFile?.content || '';
   const jsContent = jsFile?.content || '';
   const cssContent = cssFile?.content || '';
+  const vueContent = vueFile?.content || '';
+  const reactContent = reactFile?.content || '';
   
   let scriptSection = '';
-  if (importSource) {
+  
+  if (sandboxType === 'vue' && vueContent) {
+    scriptSection = `<script type="importmap">
+{
+  "imports": {
+    "vue": "https://esm.sh/vue@3.4.0",
+    "vue/": "https://esm.sh/vue@3.4.0/",
+    "htm": "https://esm.sh/htm@3.1.1"
+  }
+}
+</script>
+<script type="module">
+import { createApp, ref, computed } from 'vue';
+import htm from 'htm';
+
+const html = htm.bind(createApp);
+
+${vueContent}
+</script>`;
+  } else if (sandboxType === 'react' && reactContent) {
+    const reactImportMap = importMap || `{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom/": "https://esm.sh/react-dom@18.2.0/",
+    "htm": "https://esm.sh/htm@3.1.1"
+  }
+}`;
+    
+    scriptSection = `<script type="importmap">${reactImportMap}</script>
+<script type="module">
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import htm from 'htm';
+
+const html = htm.bind(React);
+
+${reactContent}
+
+const root = createRoot(document.getElementById('root'));
+root.render(html(App));
+</script>`;
+  } else if (importSource) {
     scriptSection = `<script type="module">
 ${importSource}
 </script>`;
   }
   
-  if (jsContent && !importSource) {
-    scriptSection = `<script>
-try {
-  ${jsContent}
-} catch (err) {
-  console.error('Error:', err);
-  document.body.innerHTML += '<pre style="color: #ff3333; margin-top: 20px;">' + err.message + '</pre>';
-}
-</script>`;
-  } else if (jsContent && importSource) {
-    scriptSection = `<script type="module">
+  if (jsContent && !sandboxType.includes('react') && !sandboxType.includes('vue')) {
+    if (importSource) {
+      scriptSection = `<script type="module">
 ${importSource}
 
 try {
@@ -71,6 +109,16 @@ try {
   document.body.innerHTML += '<pre style="color: #ff3333; margin-top: 20px;">' + err.message + '</pre>';
 }
 </script>`;
+    } else {
+      scriptSection = `<script>
+try {
+  ${jsContent}
+} catch (err) {
+  console.error('Error:', err);
+  document.body.innerHTML += '<pre style="color: #ff3333; margin-top: 20px;">' + err.message + '</pre>';
+}
+</script>`;
+    }
   }
 
   if (htmlContent) {
@@ -86,7 +134,11 @@ try {
     }
     
     if (scriptSection) {
-      html = html.replace('</body>', `${scriptSection}</body>`);
+      if (html.includes('<div id="root"></div>') || html.includes('<div id="app"></div>')) {
+        html = html.replace('</body>', `${scriptSection}</body>`);
+      } else {
+        html = html.replace('</body>', `${scriptSection}</body>`);
+      }
     }
     
     return `<!DOCTYPE html>
@@ -94,9 +146,23 @@ try {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  ${importMap ? `<script type="importmap">${importMap}</script>` : ''}
+  ${!sandboxType.includes('react') && !sandboxType.includes('vue') && importMap ? `<script type="importmap">${importMap}</script>` : ''}
 </head>
 ${html}
+</html>`;
+  }
+  
+  if (sandboxType === 'react' || sandboxType === 'vue') {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  ${scriptSection}
+</head>
+<body>
+  <div id="root"></div>
+</body>
 </html>`;
   }
   
@@ -118,7 +184,7 @@ ${html}
 </html>`;
 }
 
-export default function PreviewFrame({ codeSource, importSource }: PreviewFrameProps) {
+export default function PreviewFrame({ codeSource, importSource, sandboxType }: PreviewFrameProps) {
   const srcDoc = useMemo(() => {
     if (!codeSource || codeSource.length === 0) {
       return `<!DOCTYPE html>
@@ -135,8 +201,8 @@ export default function PreviewFrame({ codeSource, importSource }: PreviewFrameP
 </body>
 </html>`;
     }
-    return generateHtmlDocument(codeSource, importSource);
-  }, [codeSource, importSource]);
+    return generateHtmlDocument(codeSource, importSource, sandboxType);
+  }, [codeSource, importSource, sandboxType]);
 
   return (
     <div className="h-full flex flex-col bg-[var(--card)] border border-[var(--border)]">
@@ -152,8 +218,9 @@ export default function PreviewFrame({ codeSource, importSource }: PreviewFrameP
         <iframe
           srcDoc={srcDoc}
           title="Preview"
-          sandbox="allow-scripts allow-modals"
+          sandbox="allow-scripts allow-modals allow-same-origin"
           className="w-full h-full border-0"
+          key={srcDoc}
         />
       </div>
     </div>

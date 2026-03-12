@@ -58,7 +58,6 @@ export default function PlaygroundPage() {
   const hasTitle = !!challenge?.title;
   const hasDescription = !!challenge?.description;
   const hasInitCode = code.length > 0;
-  const hasCodeSource = challenge?.codeSource && challenge.codeSource.length > 0;
 
   if (loading) {
     return (
@@ -125,6 +124,9 @@ export default function PlaygroundPage() {
           </button>
           <div className="text-xs text-[var(--muted-foreground)]">
             <span className="text-[var(--primary)]">{slug}</span>
+            <span className="ml-2 px-1.5 py-0.5 bg-[var(--muted)] rounded text-[10px]">
+              {challenge.sandboxType}
+            </span>
           </div>
         </div>
       </header>
@@ -184,10 +186,11 @@ export default function PlaygroundPage() {
           )}
         </div>
         <div className="w-full md:w-1/2 h-1/2 md:h-full">
-          {hasCodeSource ? (
+          {hasInitCode ? (
             <PreviewFrame 
-              codeSource={challenge.codeSource}
+              codeSource={code}
               importSource={challenge.importSource}
+              sandboxType={challenge.sandboxType}
             />
           ) : (
             <div className="h-full flex items-center justify-center p-4 bg-[var(--card)] border border-[var(--border)]">

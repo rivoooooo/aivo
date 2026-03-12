@@ -35,7 +35,7 @@ export interface ChallengesListResult {
     description: string | null;
     difficulty: string;
     language: string;
-    categoryId: string;
+    categoryId: string | null;
     category?: {
       id: string;
       name: string;
@@ -104,9 +104,11 @@ export async function getChallengeBySlug(slug: string, language: string = 'en') 
 
   if (!challenge) return null;
 
-  const category = await db.query.categories.findFirst({
-    where: eq(categories.id, challenge.categoryId),
-  });
+  const category = challenge.categoryId 
+    ? await db.query.categories.findFirst({
+        where: eq(categories.id, challenge.categoryId),
+      })
+    : null;
 
   return {
     ...challenge,
@@ -208,15 +210,17 @@ export async function getChallengesList(params: ChallengesListParams): Promise<C
 
   const dataWithCategory = await Promise.all(
     data.map(async (item) => {
-      const categoryResult = await db
-        .select({
-          id: categories.id,
-          name: categories.name,
-          icon: categories.icon,
-        })
-        .from(categories)
-        .where(eq(categories.id, item.categoryId))
-        .limit(1);
+      const categoryResult = item.categoryId
+        ? await db
+            .select({
+              id: categories.id,
+              name: categories.name,
+              icon: categories.icon,
+            })
+            .from(categories)
+            .where(eq(categories.id, item.categoryId))
+            .limit(1)
+        : [];
 
       return {
         ...item,
