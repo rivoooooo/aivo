@@ -23,17 +23,26 @@
 src/
 ├── app/                        # Next.js App Router
 │   ├── [locale]/
-│   │   └── challenge/          # 挑战页面
-│   │       └── [slug]/        # 挑战详情页
-│   └── provider/               # AI Provider 页面
+│   │   ├── challenge/          # 挑战页面
+│   │   │   └── [slug]/
+│   │   │       ├── page.tsx    # 挑战详情页
+│   │   │       └── playground/# 训练场页面
+│   │   │           ├── page.tsx
+│   │   │           └── components/
+│   │   ├── provider/           # AI Provider 页面
+│   │   └── page.tsx           # 首页
+│   └── api/                   # API 路由
 ├── components/                 # React 组件
-├── lib/                        # 工具函数
-├── server/lib/db/             # 数据库相关
-│   ├── schema.ts              # 表定义
-│   ├── index.ts               # 数据库连接
-│   ├── queries.ts             # 查询函数
-│   └── seed.ts                # 种子数据
-└── messages/                   # 国际化消息
+├── lib/                       # 工具函数
+│   ├── api/                   # API 客户端
+│   └── hooks/                 # React Hooks
+├── server/                    # 后端服务
+│   └── lib/db/               # 数据库相关
+│       ├── schema.ts          # 表定义
+│       ├── index.ts           # 数据库连接
+│       ├── queries.ts         # 查询函数
+│       └── seed.ts            # 种子数据
+└── messages/                  # 国际化消息
 ```
 
 ## 常用命令
@@ -55,10 +64,86 @@ src/
 | `bun run db:seed` | 导入种子数据 |
 | `bun run db:generate` | 生成迁移文件 |
 
+## 已完成功能
+
+### 1. 数据库架构 (Drizzle ORM)
+- PostgreSQL 数据库集成
+- Drizzle ORM 配置完整
+- 分类和挑战表结构
+
+### 2. 多语言支持
+- next-intl 国际化配置
+- 中英文语言包
+- 语言切换组件
+
+### 3. 挑战资源系统
+- challenge_resources 子表
+- 支持多种类型 (HTML/React/Vue)
+- esm.sh 依赖加载
+
+### 4. 训练场 (Playground)
+- 代码编辑器组件
+- 实时预览 iframe
+- 沙箱环境
+
+### 5. Terminal CLI 设计系统
+- 双主题支持 (深色/浅色)
+- 高对比度配色
+- 等宽字体风格
+
+## 数据库架构
+
+### 表结构
+
+#### categories 表
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID | 主键 |
+| name | VARCHAR(100) | 分类名称 (唯一) |
+| description | TEXT | 分类描述 |
+| icon | VARCHAR(50) | 分类图标 |
+| display_order | INTEGER | 显示顺序 |
+| created_at | TIMESTAMP | 创建时间 |
+
+#### challenges 表
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID | 主键 |
+| category_id | UUID | 外键 (关联 categories) |
+| slug | VARCHAR(100) | URL 标识 |
+| name | VARCHAR(255) | 挑战名称 |
+| description | TEXT | 挑战描述 |
+| difficulty | VARCHAR(20) | 难度等级 |
+| language | VARCHAR(10) | 语言版本 (默认 en) |
+| created_at | TIMESTAMP | 创建时间 |
+
+#### challenge_resources 表
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID | 主键 |
+| challenge_id | UUID | 外键 (关联 challenges) |
+| type | VARCHAR(20) | 类型: html, react, vue |
+| import_source | TEXT | esm.sh 依赖引用 |
+| init_code | JSON | 初始代码模板 |
+| code_source | JSON | 最终源码 |
+| display_order | INTEGER | 显示顺序 |
+| created_at | TIMESTAMP | 创建时间 |
+
+## 路由结构
+
+| 路由 | 说明 |
+|------|------|
+| `/` | 首页 |
+| `/{locale}` | 国际化根路由 |
+| `/{locale}/challenge` | 挑战列表页 |
+| `/{locale}/challenge/{slug}` | 挑战详情页 |
+| `/{locale}/challenge/{slug}/playground` | 训练场页面 |
+| `/{locale}/provider` | AI Provider 列表 |
+| `/{locale}/provider/{provider}` | Provider 详情页 |
+
 ## 开发规范
 
 ### 代码规范
-
 - 使用 ESLint 进行代码检查
 - 使用 TypeScript 严格模式
 - 遵循 React 19 最佳实践
@@ -66,13 +151,11 @@ src/
 - **遵循设计系统风格指南**: 引用 `prompt.xml` 文件
 
 ### 文件命名
-
 - 组件文件使用 PascalCase (如 `GooglePage.tsx`)
 - 工具函数使用 camelCase (如 `utils.ts`)
 - 配置文件使用小写连字符 (如 `eslint.config.mjs`)
 
 ### 代码风格
-
 - 使用函数式组件
 - 使用 TypeScript 类型定义
 - 使用 ESLint 配置的规则
@@ -117,38 +200,6 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 const result = await model.generateContent('Hello, how are you?');
 console.log(result.response.text());
 ```
-
-## 路由结构
-
-- `/` - 首页
-- `/[locale]/challenge` - 挑战列表页
-- `/[locale]/challenge/[slug]` - 挑战详情页
-- `/provider/google` - Google AI 测试页面
-
-## 数据库架构
-
-### 表结构
-
-#### categories 表
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | UUID | 主键 |
-| name | VARCHAR(100) | 分类名称 (唯一) |
-| description | TEXT | 分类描述 |
-| icon | VARCHAR(50) | 分类图标 |
-| display_order | INTEGER | 显示顺序 |
-| created_at | TIMESTAMP | 创建时间 |
-
-#### challenges 表
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | UUID | 主键 |
-| category_id | UUID | 外键 (关联 categories) |
-| slug | VARCHAR(100) | URL 标识 (唯一) |
-| name | VARCHAR(255) | 挑战名称 |
-| description | TEXT | 挑战描述 |
-| difficulty | VARCHAR(20) | 难度等级 |
-| created_at | TIMESTAMP | 创建时间 |
 
 ## 注意事项
 
