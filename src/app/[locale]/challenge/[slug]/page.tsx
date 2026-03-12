@@ -103,6 +103,13 @@ const difficultyColors: Record<string, string> = {
 export default function ChallengePage({ params }: { params: { slug: string } }) {
   const challenge = challenges[params.slug];
 
+  const playgroundChallenges = [
+    'html-basics', 'css-flexbox', 'css-grid', 'animation-css',
+    'dom-manipulation', 'react-basics', 'react-todo',
+    'canvas-animation', 'canvas-demo', 'fetch-api'
+  ];
+  const hasPlayground = playgroundChallenges.includes(params.slug);
+
   if (!challenge) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16">
@@ -182,7 +189,12 @@ export default function ChallengePage({ params }: { params: { slug: string } }) 
         ))}
       </div>
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8 flex justify-center gap-4">
+        {hasPlayground && (
+          <Link href={`/en/challenge/${params.slug}/playground`} className="btn-terminal text-lg px-8 py-3">
+            [OPEN PLAYGROUND]
+          </Link>
+        )}
         <button className="btn-terminal text-lg px-8 py-3">
           [SUBMIT ANSWERS]
         </button>

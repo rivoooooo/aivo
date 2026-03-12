@@ -17,6 +17,22 @@ interface Category {
 
 const categories: Category[] = [
   {
+    name: "PLAYGROUND",
+    description: "Interactive code playgrounds",
+    icon: "[PLAYGROUND]",
+    challenges: [
+      { name: "html-basics", description: "HTML basic training", href: "/en/challenge/html-basics", difficulty: "EASY" },
+      { name: "css-flexbox", description: "Flexbox layout practice", href: "/en/challenge/css-flexbox", difficulty: "EASY" },
+      { name: "css-grid", description: "CSS Grid layout", href: "/en/challenge/css-grid", difficulty: "EASY" },
+      { name: "animation-css", description: "CSS animations", href: "/en/challenge/animation-css", difficulty: "EASY" },
+      { name: "dom-manipulation", description: "DOM operations", href: "/en/challenge/dom-manipulation", difficulty: "EASY" },
+      { name: "react-basics", description: "React counter demo", href: "/en/challenge/react-basics", difficulty: "EASY" },
+      { name: "react-todo", description: "React Todo List", href: "/en/challenge/react-todo", difficulty: "EASY" },
+      { name: "canvas-animation", description: "Canvas animation", href: "/en/challenge/canvas-animation", difficulty: "EASY" },
+      { name: "fetch-api", description: "Fetch API demo", href: "/en/challenge/fetch-api", difficulty: "EASY" },
+    ],
+  },
+  {
     name: "AI CHALLENGES",
     description: "Modern AI tools & prompt engineering",
     icon: "[AI]",
@@ -33,6 +49,7 @@ const categories: Category[] = [
     description: "Core frontend fundamentals",
     icon: "[FUNDAMENTALS]",
     challenges: [
+      { name: "html-basics", description: "HTML basic training playground", href: "/en/challenge/html-basics", difficulty: "EASY" },
       { name: "event-loop", description: "JavaScript Event Loop", href: "/en/challenge/event-loop", difficulty: "MEDIUM" },
       { name: "closure-mastery", description: "Deep dive into Closures", href: "/en/challenge/closure-mastery", difficulty: "MEDIUM" },
       { name: "this-binding", description: "Understanding 'this' binding", href: "/en/challenge/this-binding", difficulty: "EASY" },
@@ -45,6 +62,8 @@ const categories: Category[] = [
     description: "Web performance optimization",
     icon: "[PERF]",
     challenges: [
+      { name: "react-basics", description: "React basics playground", href: "/en/challenge/react-basics", difficulty: "EASY" },
+      { name: "canvas-demo", description: "Canvas drawing playground", href: "/en/challenge/canvas-demo", difficulty: "EASY" },
       { name: "bundle-analysis", description: "Analyze and optimize bundles", href: "/en/challenge/bundle-analysis", difficulty: "MEDIUM" },
       { name: "lazy-loading", description: "Code splitting strategies", href: "/en/challenge/lazy-loading", difficulty: "EASY" },
       { name: "rendering-strategies", description: "CSR vs SSR vs SSG vs ISR", href: "/en/challenge/rendering-strategies", difficulty: "HARD" },
