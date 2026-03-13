@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useLocale } from "next-intl"
 import { useTypewriter } from "@/lib/hooks/useTypewriter"
 import { TypewriterText } from "@/components/TypewriterText"
-import { asciiList } from "@/data/ascii"
+import { AsciiLogoDisplay } from "@/components/AsciiLogoDisplay"
 
 const HERO_LINES = [
   "> AI-Era_",
@@ -32,10 +32,21 @@ export function HeroSection() {
     lineDelay: 350,
   })
 
-  const [ascii, setAscii] = useState("")
+  const heroRef = useRef<HTMLDivElement>(null)
+  const [isScrolledPast, setIsScrolledPast] = useState(false)
 
   useEffect(() => {
-    setAscii(asciiList[Math.floor(Math.random() * asciiList.length)])
+    const handleScroll = () => {
+      if (heroRef.current) {
+        const heroBottom = heroRef.current.getBoundingClientRect().bottom
+        setIsScrolledPast(heroBottom < 0)
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll()
+
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
@@ -44,9 +55,12 @@ export function HeroSection() {
         AI-Era — Gamified Web Developer Training: Frontend Challenges & AI Coding
       </h1>
       
-      <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
-        <div className="w-full md:w-[55%]">
-          <div className="mb-6">
+      <div 
+        ref={heroRef}
+        className="flex flex-col md:flex-row gap-8 md:gap-12 items-start justify-center p-4 md:p-8 box-border"
+      >
+        <div className="w-full md:w-[55%] min-h-[300px] md:min-h-[400px] max-h-[60vh] md:max-h-[70vh] overflow-hidden flex flex-col">
+          <div className="mb-6 flex-shrink-0">
             <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-glow tracking-tight">
               <TypewriterText
                 texts={["AI-Era", ...SUBTITLE_TEXTS]}
@@ -60,7 +74,7 @@ export function HeroSection() {
             </h2>
           </div>
 
-          <div className="font-mono text-sm md:text-base leading-relaxed whitespace-pre">
+          <div className="font-mono text-sm md:text-base leading-relaxed whitespace-pre flex-1 overflow-y-auto">
             {displayedLines.map((line, index) => (
               <div key={index}>
                 {line}
@@ -70,36 +84,38 @@ export function HeroSection() {
               </div>
             ))}
           </div>
-
-          {isComplete && (
-            <>
-              <p className="mt-6 text-sm md:text-base text-muted-foreground">
-                AI-Era is a gamified platform for training real web developer skills
-                in the age of AI.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  href={`/${locale}/challenge`}
-                  className="inline-flex items-center justify-center h-9 px-4 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/80 transition-colors"
-                >
-                  Start Challenges
-                </Link>
-                <Link
-                  href={`/${locale}/challenge`}
-                  className="inline-flex items-center justify-center h-9 px-4 text-sm font-medium rounded-lg border border-border bg-transparent hover:bg-muted transition-colors"
-                >
-                  Explore Modules
-                </Link>
-              </div>
-            </>
-          )}
         </div>
 
-        <div className="w-full md:w-[45%] md:pt-2">
-          <pre className="text-[12px] leading-[1.4] text-primary font-mono overflow-x-auto">
-            {ascii}
-          </pre>
+        <div className="w-full md:w-[45%] md:pt-2 md:flex md:justify-center md:items-start">
+          <AsciiLogoDisplay />
+        </div>
+      </div>
+
+      <div 
+        className={`
+          fixed bottom-0 left-0 right-0 z-50 p-4 bg-background/95 backdrop-blur-sm border-t border-border
+          transition-all duration-300 ease-in-out
+          ${isScrolledPast 
+            ? "translate-y-0 opacity-100" 
+            : "translate-y-full opacity-0"
+          }
+        `}
+      >
+        <div className="flex justify-center">
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link
+              href={`/${locale}/challenge`}
+              className="inline-flex items-center justify-center h-11 px-6 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Start Challenges
+            </Link>
+            <Link
+              href={`/${locale}/challenge`}
+              className="inline-flex items-center justify-center h-11 px-6 text-sm font-medium rounded-lg border-2 border-border bg-transparent hover:bg-muted hover:border-muted-foreground transition-colors"
+            >
+              Explore Modules
+            </Link>
+          </div>
         </div>
       </div>
     </>

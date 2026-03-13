@@ -1,22 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { SyncedTypewriter } from '@/components/SyncedTypewriter';
-
-const ASCII_LOGO = `
-  :%@@:.#@@@@@@@@@@= 
-  .*@@@@:.#@@@@@@@@@@= 
-  -@@@@@:.#@@@@@@@@@@= 
-  -@@@@@:.#@@@@@@@@@@= 
-  -@@@@@:.#@@@@@@@@@@= 
-  -@@@@@:.#@@@@@@@@@@= 
-  -@@@@@:.#@@@@@@@@@@= 
-  -@@@@@:.#@@@@@@@@@@= 
-  -@@@@@:.#@@@@@@@@@@= 
-  -@@@@@:.#@@@@@@@@@@= 
-  .*@@@* .#@@@@@@@@@%: 
-    .... .#@@@@@@@@@+: 
-  :%@@@@:.#@@@@@@@@=  
-  -@@@@@:.#@@@@@@*: 
-  -@@@@@:.#@@@#-`;
+import { asciiLogoList } from '@/data/asciiLogo';
 
 export default async function AboutPage() {
   const t = await getTranslations('about');
@@ -31,7 +15,7 @@ export default async function AboutPage() {
     <div className="min-h-screen flex justify-center p-4">
       <div className="w-full max-w-7xl">
         <SyncedTypewriter 
-          logoLines={ASCII_LOGO.split('\n')}
+          logoLines={asciiLogoList[0].split('\n')}
           infoItems={infoItems}
           logoDelay={50}
           textDelay={100}
