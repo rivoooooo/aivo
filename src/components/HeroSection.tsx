@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useLocale } from "next-intl"
 import { useTypewriter } from "@/lib/hooks/useTypewriter"
-import { TypewriterText } from "@/components/TypewriterText"
 import { AsciiLogoDisplay } from "@/components/AsciiLogoDisplay"
 import { TerminalEmulator } from "@/components/ui/TerminalEmulator"
 
@@ -18,12 +17,8 @@ const HERO_LINES = [
   "system online",
 ]
 
-const SUBTITLE_TEXTS = [
-  "Web Dev Skills",
-  "Frontend Challenges",
-  "AI Coding",
-  "Debugging Arena",
-]
+const SEO_TEXT =
+  "AI-Era is a gamified platform for training real web developer skills in the age of AI."
 
 export function HeroSection() {
   const locale = useLocale()
@@ -33,81 +28,77 @@ export function HeroSection() {
     lineDelay: 350,
   })
 
+  const [isClient, setIsClient] = useState(false)
+  const [showStaticLayer, setShowStaticLayer] = useState(false)
+  const typingLayerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
-  const [isScrolledPast, setIsScrolledPast] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (heroRef.current) {
-        const heroBottom = heroRef.current.getBoundingClientRect().bottom
-        setIsScrolledPast(heroBottom < 0)
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    handleScroll()
-
-    return () => window.removeEventListener("scroll", handleScroll)
+    setIsClient(true)
   }, [])
+
+  useEffect(() => {
+    if (isComplete && typingLayerRef.current) {
+      typingLayerRef.current.style.opacity = "0"
+
+      const showStaticTimeout = setTimeout(() => {
+        setShowStaticLayer(true)
+      }, 300)
+
+      return () => clearTimeout(showStaticTimeout)
+    }
+  }, [isComplete])
 
   return (
     <>
       <h1 className="sr-only">
         AI-Era — Gamified Web Developer Training: Frontend Challenges & AI Coding
       </h1>
-      
-      <div 
+
+      <div
         ref={heroRef}
         className="flex flex-col md:flex-row gap-8 md:gap-12 items-start justify-center p-4 md:p-8 box-border"
       >
-        <div className="w-full md:w-[55%] min-h-[300px] md:min-h-[400px] max-h-[60vh] md:max-h-[70vh] overflow-hidden flex flex-col">
+        <div className="w-full md:w-[55%] min-h-[300px] md:min-h-[400px] max-h-[60vh] md:max-h-[70vh] overflow-hidden flex flex-col relative">
           <div className="mb-6 flex-shrink-0">
             <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-glow tracking-tight">
-              <TypewriterText
-                texts={["AI-Era", ...SUBTITLE_TEXTS]}
-                typingSpeed={120}
-                deletingSpeed={80}
-                pauseDuration={5000}
-                prefix=""
-                suffix="_"
-              />
-              <span className="animate-blink text-2xl md:text-3xl ml-1">█</span>
+              AI-Era
+              <span className="animate-blink text-2xl md:text-3xl ml-1 text-primary">█</span>
             </h2>
           </div>
 
-          <div className="font-mono text-sm md:text-base leading-relaxed whitespace-pre flex-1 overflow-y-auto">
-            {displayedLines.map((line, index) => (
-              <div key={index}>
-                {line}
-                {index === displayedLines.length - 1 && isComplete && (
-                  <span className="animate-blink inline-block ml-1">█</span>
-                )}
-              </div>
-            ))}
+          <div className="font-mono text-sm md:text-base leading-relaxed whitespace-pre flex-1 overflow-y-auto relative">
+            <div
+              className="absolute inset-0 transition-opacity duration-300"
+              style={{ opacity: showStaticLayer ? 1 : 0 }}
+              aria-hidden="true"
+            >
+              {HERO_LINES.map((line, index) => (
+                <div key={index}>{line}</div>
+              ))}
+            </div>
+
+            <div
+              ref={typingLayerRef}
+              className="absolute inset-0 transition-opacity duration-300"
+              style={{ opacity: 1 }}
+            >
+              {HERO_LINES.map((line, index) => (
+                <div key={index}>
+                  {index < displayedLines.length ? displayedLines[index] : ""}
+                  {index === displayedLines.length - 1 && !isComplete && (
+                    <span className="animate-blink inline-block ml-1">█</span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="w-full md:w-[45%] md:pt-2 md:flex md:justify-center md:items-start">
-          <AsciiLogoDisplay />
-        </div>
-      </div>
+          <p className="mt-6 text-muted-foreground text-sm md:text-base">
+            {SEO_TEXT}
+          </p>
 
-      <div className="max-w-5xl mx-auto mt-12 px-4 md:px-8">
-        <TerminalEmulator isVisible={isComplete} />
-      </div>
-
-      <div 
-        className={`
-          fixed bottom-0 left-0 right-0 z-50 p-4 bg-background/95 backdrop-blur-sm border-t border-border
-          transition-all duration-300 ease-in-out
-          ${isScrolledPast 
-            ? "translate-y-0 opacity-100" 
-            : "translate-y-full opacity-0"
-          }
-        `}
-      >
-        <div className="flex justify-center">
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="mt-8 flex flex-wrap gap-4">
             <Link
               href={`/${locale}/challenge`}
               className="inline-flex items-center justify-center h-11 px-6 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
@@ -122,6 +113,14 @@ export function HeroSection() {
             </Link>
           </div>
         </div>
+
+        <div className="w-full md:w-[45%] md:pt-2 md:flex md:justify-center md:items-start">
+          <AsciiLogoDisplay />
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto mt-12 px-4 md:px-8">
+        <TerminalEmulator isVisible={isClient} />
       </div>
     </>
   )
