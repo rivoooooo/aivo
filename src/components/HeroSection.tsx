@@ -6,6 +6,7 @@ import { useLocale } from "next-intl"
 import { useTypewriter } from "@/lib/hooks/useTypewriter"
 import { TypewriterText } from "@/components/TypewriterText"
 import { AsciiLogoDisplay } from "@/components/AsciiLogoDisplay"
+import { TerminalEmulator } from "@/components/ui/TerminalEmulator"
 
 const HERO_LINES = [
   "> AI-Era_",
@@ -89,6 +90,10 @@ export function HeroSection() {
         <div className="w-full md:w-[45%] md:pt-2 md:flex md:justify-center md:items-start">
           <AsciiLogoDisplay />
         </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto mt-12 px-4 md:px-8">
+        <TerminalEmulator isVisible={isComplete} />
       </div>
 
       <div 
