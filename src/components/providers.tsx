@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from '@/components/theme-provider';
+import { SessionProvider } from '@/lib/hooks/use-session'
 
 interface ProvidersProps {
   children: ReactNode;
@@ -15,9 +16,11 @@ export default function Providers({ children, messages }: ProvidersProps) {
       enableSystem
       disableTransitionOnChange={false}
     >
-      <NextIntlClientProvider messages={messages}>
-        {children}
-      </NextIntlClientProvider>
+      <SessionProvider>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </SessionProvider>
     </ThemeProvider>
   );
 }

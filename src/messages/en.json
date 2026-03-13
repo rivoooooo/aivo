@@ -325,5 +325,29 @@
       "twitter": "Twitter"
     },
     "copyright": "© {year} AI-Era. All rights reserved."
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "profile": "Profile",
+    "myChallenges": "My Challenges",
+    "settings": "Settings",
+    "modal": {
+      "loginTitle": "LOGIN",
+      "registerTitle": "REGISTER",
+      "usernameOrEmail": "username or email",
+      "username": "username",
+      "email": "email",
+      "password": "password",
+      "noAccount": "no account?",
+      "haveAccount": "have account?",
+      "errors": {
+        "invalidCredentials": "invalid username or password",
+        "usernameTaken": "username already taken",
+        "passwordTooShort": "password must be at least 8 characters",
+        "emailInvalid": "invalid email address"
+      }
+    }
   }
 }

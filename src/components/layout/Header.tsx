@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/mode-toggle";
+import { AuthSection } from "@/components/auth/AuthSection";
 
 interface NavItem {
   href: string;
@@ -89,15 +90,14 @@ export function Header() {
             })}
           </nav>
 
-          {/* Language Switcher, Theme Toggle & Mobile Menu Button */}
-          <div className="flex items-center gap-2">
-            <div className="hidden md:block">
+          {/* Language Switcher, Theme Toggle, Auth Section & Mobile Menu Button */}
+          <div className="flex items-center">
+            <div className="hidden md:flex items-center  gap-2">
               <LanguageSwitcher />
+              <ModeToggle />
+              <AuthSection />
             </div>
 
-            <div className="hidden md:block">
-              <ModeToggle />
-            </div>
 
             {/* Mobile Menu Button */}
             <button
@@ -158,6 +158,7 @@ export function Header() {
                   <LanguageSwitcher />
                 </div>
                 <ModeToggle />
+                <AuthSection />
               </div>
             </div>
           </nav>

@@ -422,6 +422,164 @@ body {
 }
 
 /* ============================================
+   AUTH MODAL STYLES
+   ============================================ */
+
+.terminal-window {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+}
+
+.terminal-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.terminal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.terminal-close:hover {
+  color: var(--destructive);
+}
+
+.terminal-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+  margin-bottom: 0.25rem;
+}
+
+.terminal-input-wrapper {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  transition: border-color 0.15s ease;
+}
+
+.terminal-input-wrapper:focus-within {
+  border-bottom-color: var(--primary);
+}
+
+.terminal-prefix {
+  color: var(--primary);
+  font-weight: 600;
+  padding: 0 0.5rem;
+  user-select: none;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.5rem 1rem 0.5rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.terminal-input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.5;
+}
+
+.terminal-error {
+  font-size: 0.75rem;
+  color: var(--destructive);
+  padding: 0.25rem 0;
+}
+
+.outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.outline-button:hover {
+  background: var(--muted);
+  border-color: var(--primary);
+}
+
+.outline-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   ANIMATION UTILITIES
+   ============================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.15s ease-out forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.15s ease-out forwards;
+}
+
+.slide-in-from-top-2 {
+  animation: slideInFromTop 0.15s ease-out forwards;
+}
+
+.duration-150 {
+  animation-duration: 150ms;
+}
+
+.duration-100 {
+  animation-duration: 100ms;
+}
+
+/* ============================================
    RESPONSIVE UTILITIES
    ============================================ */
 

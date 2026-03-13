@@ -325,5 +325,29 @@
       "twitter": "Twitter"
     },
     "copyright": "© {year} AI-Era. 保留所有权利。"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出登录",
+    "profile": "个人主页",
+    "myChallenges": "我的挑战",
+    "settings": "设置",
+    "modal": {
+      "loginTitle": "LOGIN",
+      "registerTitle": "REGISTER",
+      "usernameOrEmail": "用户名或邮箱",
+      "username": "用户名",
+      "email": "邮箱",
+      "password": "密码",
+      "noAccount": "没有账号？",
+      "haveAccount": "已有账号？",
+      "errors": {
+        "invalidCredentials": "用户名或密码错误",
+        "usernameTaken": "用户名已被占用",
+        "passwordTooShort": "密码至少需要 8 位字符",
+        "emailInvalid": "邮箱格式不正确"
+      }
+    }
   }
 }

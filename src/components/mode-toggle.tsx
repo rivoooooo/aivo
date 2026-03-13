@@ -19,7 +19,7 @@ function ModeToggleContent() {
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="outline" size="icon" className="relative">
+          <Button variant="ghost" size="icon" className="relative">
             <Sun
               data-icon="inline-start"
               className="absolute inset-0 m-auto size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
@@ -53,7 +53,7 @@ function ModeToggleContent() {
 export function ModeToggle() {
   return (
     <ClientOnly fallback={
-      <Button variant="outline" size="icon" className="relative">
+      <Button variant="ghost" size="icon" className="relative">
         <Sun className="absolute inset-0 m-auto size-4" />
         <span className="sr-only">Toggle theme</span>
       </Button>
