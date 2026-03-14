@@ -1,26 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getChallengeWithResources } from '@/server/lib/db/queries';
+import { getDailyChallenge } from '@/server/lib/db/queries';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { slug } = await params;
     const searchParams = request.nextUrl.searchParams;
     const lang = searchParams.get('lang') || 'en';
 
-    const challenge = await getChallengeWithResources(slug, lang);
+    const challenge = await getDailyChallenge(lang);
 
     if (!challenge) {
       return NextResponse.json(
-        { error: 'Challenge not found' },
+        { error: 'No daily challenge available' },
         { status: 404 }
       );
     }
 
-    // 返回新的格式：challenge + resources
-    // resource 中的 initCode 已经是 ChallengeFile[] 格式，不需要前端转换
     return NextResponse.json({
       challenge: {
         id: challenge.id,
@@ -44,7 +38,7 @@ export async function GET(
         type: resource.type,
         name: resource.name,
         importSource: resource.importSource,
-        initCode: resource.initCode, // 已经是 ChallengeFile[] 格式
+        initCode: resource.initCode,
         codeSource: resource.codeSource,
         testCases: resource.testCases,
         displayOrder: resource.displayOrder,
@@ -52,9 +46,9 @@ export async function GET(
       category: challenge.category,
     });
   } catch (error) {
-    console.error('Error fetching challenge:', error);
+    console.error('Error fetching daily challenge:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch challenge' },
+      { error: 'Failed to fetch daily challenge' },
       { status: 500 }
     );
   }

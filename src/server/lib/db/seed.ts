@@ -224,11 +224,20 @@ const seedData = async () => {
     insertedChallenges.map((c) => [`${c.slug}-${c.language}`, c.id])
   );
 
-  const resourceData = [
+  const resourceData: {
+    challengeId: string;
+    type: string;
+    name: string;
+    importSource: string;
+    initCode: { filename: string; language: 'html' | 'css' | 'javascript' | 'typescript' | 'jsx' | 'vue'; content: string }[];
+    codeSource: { filename: string; language: 'html' | 'css' | 'javascript' | 'typescript' | 'jsx' | 'vue'; content: string }[];
+    displayOrder: number;
+  }[] = [
     // HTML Form Validation (zh)
     {
       challengeId: challengeMap.get('html-form-validation-zh')!,
       type: 'html',
+      name: 'HTML Form',
       importSource: '',
       initCode: [
         {
@@ -369,6 +378,7 @@ const seedData = async () => {
     {
       challengeId: challengeMap.get('html-form-validation-en')!,
       type: 'html',
+      name: 'HTML Form',
       importSource: '',
       initCode: [
         {
@@ -509,6 +519,7 @@ const seedData = async () => {
     {
       challengeId: challengeMap.get('react-todo-list-zh')!,
       type: 'react',
+      name: 'React Todo',
       importSource: `import React from "https://esm.sh/react@19";
 import ReactDOM from "https://esm.sh/react-dom@19/client";`,
       initCode: [
@@ -656,6 +667,7 @@ root.render(React.createElement(App));`
     {
       challengeId: challengeMap.get('react-todo-list-en')!,
       type: 'react',
+      name: 'React Todo',
       importSource: `import React from "https://esm.sh/react@19";
 import ReactDOM from "https://esm.sh/react-dom@19/client";`,
       initCode: [
@@ -802,6 +814,7 @@ root.render(React.createElement(App));`
     {
       challengeId: challengeMap.get('vue-shopping-cart-zh')!,
       type: 'vue',
+      name: 'Vue Cart',
       importSource: `import { createApp } from "https://esm.sh/vue@3";`,
       initCode: [
         {
@@ -988,6 +1001,7 @@ createApp(App).mount('#app');
     {
       challengeId: challengeMap.get('vue-shopping-cart-en')!,
       type: 'vue',
+      name: 'Vue Cart',
       importSource: `import { createApp } from "https://esm.sh/vue@3";`,
       initCode: [
         {
@@ -1172,6 +1186,7 @@ createApp(App).mount('#app');
     {
       challengeId: challengeMap.get('js-calculator-zh')!,
       type: 'javascript',
+      name: 'JS Calculator',
       importSource: '',
       initCode: [
         {
@@ -1316,6 +1331,7 @@ createApp(App).mount('#app');
     {
       challengeId: challengeMap.get('css-animated-button-zh')!,
       type: 'css',
+      name: 'CSS Button',
       importSource: '',
       initCode: [
         {

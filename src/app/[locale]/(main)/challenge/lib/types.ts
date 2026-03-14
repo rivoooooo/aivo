@@ -1,4 +1,4 @@
-import type { Challenge, Category } from '@/server/lib/db/schema';
+import type { Challenge, Category, UserProgress as SchemaUserProgress } from '@/server/lib/db/schema';
 
 export type NodeStatus = 'available' | 'in_progress' | 'completed';
 
@@ -8,11 +8,8 @@ export type ChallengeNodeData = Record<string, unknown> & {
   status: NodeStatus;
 };
 
-export type UserProgress = {
-  challengeId: string;
-  status: NodeStatus;
-  completedAt?: Date | null;
-};
+// 使用 schema 中的 UserProgress 类型
+export type UserProgress = SchemaUserProgress;
 
 export type FilterState = {
   category: string;

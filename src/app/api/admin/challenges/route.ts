@@ -16,7 +16,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, slug, description, difficulty, language, sandboxId, starterCode, isPublished, categoryId } = body;
+    const { name, slug, description, difficulty, language, starterCode, isPublished, categoryId, xpReward, estimatedTime, isDaily, tags } = body;
 
     const newChallenge = await db.insert(challenges).values({
       name,
@@ -24,10 +24,13 @@ export async function POST(request: NextRequest) {
       description,
       difficulty,
       language: language || 'en',
-      sandboxId,
       starterCode,
       isPublished: isPublished || false,
       categoryId,
+      xpReward: xpReward || 100,
+      estimatedTime,
+      isDaily: isDaily || false,
+      tags: tags || [],
     }).returning();
 
     return NextResponse.json(newChallenge[0], { status: 201 });

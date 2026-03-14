@@ -7,25 +7,7 @@ import { EmptyState } from '@/components/ui/empty';
 import { LoadingPage, LoadingSkeletonCard } from '@/components/ui/loading';
 import { useChallenge } from '@/lib/hooks/useChallenge';
 import { cn } from '@/lib/utils';
-
-const localeToLanguage: Record<string, string> = {
-  'zh': 'zh',
-  'en': 'en',
-  'ja': 'ja',
-};
-
-const difficultyColors: Record<string, string> = {
-  EASY: "var(--success)",
-  MEDIUM: "var(--warning)",
-  HARD: "var(--chart-3)",
-  EXPERT: "var(--error)",
-};
-
-const typeLabels: Record<string, { zh: string; en: string }> = {
-  html: { zh: 'HTML', en: 'HTML' },
-  react: { zh: 'React', en: 'React' },
-  vue: { zh: 'Vue', en: 'Vue' },
-};
+import { difficultyColors, typeLabels, localeToLanguage } from '@/types/challenge';
 
 function ChallengeContent({ 
   slug, 
@@ -35,7 +17,7 @@ function ChallengeContent({
   locale: string;
 }) {
   const searchParams = useSearchParams();
-  const lang = searchParams.get('lang') || localeToLanguage[locale] || 'en';
+  const lang = searchParams.get('lang') || localeToLanguage(locale) || 'en';
   const typeParam = searchParams.get('type');
   
   const [isFullscreen, setIsFullscreen] = useState(false);

@@ -1,12 +1,12 @@
 'use client';
 
 import { useMemo } from 'react';
-import { ChallengeFile } from '../utils';
+import type { ChallengeFile } from '@/types/challenge';
 
 interface PreviewFrameProps {
   codeSource: ChallengeFile[];
   importSource: string;
-  sandboxType: 'html' | 'javascript' | 'react' | 'vue';
+  sandboxType: 'html' | 'javascript' | 'typescript' | 'jsx' | 'vue';
 }
 
 function buildImportMap(importSource: string): string {
@@ -41,7 +41,7 @@ function generateHtmlDocument(codeSource: ChallengeFile[], importSource: string,
   const jsFile = codeSource.find(f => f.language === 'javascript' || f.filename.endsWith('.js') || f.filename.endsWith('.jsx'));
   const cssFile = codeSource.find(f => f.language === 'css' || f.filename.endsWith('.css'));
   const vueFile = codeSource.find(f => f.language === 'vue' || f.filename.endsWith('.vue'));
-  const reactFile = codeSource.find(f => f.language === 'react' || f.filename.endsWith('.jsx') || f.filename.endsWith('.tsx'));
+  const reactFile = codeSource.find(f => f.language === 'jsx' || f.language === 'typescript' || f.filename.endsWith('.jsx') || f.filename.endsWith('.tsx'));
   
   const htmlContent = htmlFile?.content || '';
   const jsContent = jsFile?.content || '';
