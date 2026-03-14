@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher"
+import { ScanlineToggle } from "@/components/ui/ScanlineToggle"
 
 export function Footer() {
   const [currentYear, setCurrentYear] = useState<number>(2024)
@@ -68,6 +69,7 @@ export function Footer() {
             <div className="text-muted-foreground text-[11px] italic">
               {`> type to interact`}
             </div>
+            <ScanlineToggle />
           </div>
         </div>
 
