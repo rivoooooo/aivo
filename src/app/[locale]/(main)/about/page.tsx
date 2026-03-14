@@ -1,26 +1,147 @@
-import { getTranslations } from 'next-intl/server';
-import { SyncedTypewriter } from '@/components/SyncedTypewriter';
-import { asciiLogoList } from '@/data/asciiLogo';
+import { getTranslations } from "next-intl/server"
+import { Metadata } from "next"
+import { HeroSection } from "./components/HeroSection"
+import { MissionSection } from "./components/MissionSection"
+import { FounderSection } from "./components/FounderSection"
+import { TeamSection } from "./components/TeamSection"
+import { OpenRolesSection } from "./components/OpenRolesSection"
+import { StackSection } from "./components/StackSection"
+import { ContactSection } from "./components/ContactSection"
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "About — AI-Era | Developer Training Platform",
+    description:
+      "AI-Era is a training ground built by developers for developers navigating the AI era. Learn our mission, team, and tech stack.",
+  }
+}
 
 export default async function AboutPage() {
-  const t = await getTranslations('about');
+  const t = await getTranslations("about")
 
-  const infoItems = [
-    { label: t('project'), value: t('name') },
-    { label: t('version'), value: t('versionNumber') },
-    { label: t('description'), value: t('descriptionContent') },
-  ];
+  const packageJson = `{
+  "name": "ai-era",
+  "version": "0.1.0",
+  "description": "A training ground for developers in the AI era",
+
+  "dependencies": {
+    "next":           "15.x",    // The framework
+    "react":          "19.x",    // The UI layer
+    "typescript":     "5.x",     // Because we're not animals
+    "drizzle-orm":    "latest",  // Type-safe queries
+    "better-auth":    "latest",  // Auth without the pain
+    "tailwindcss":    "4.x",     // Utility-first CSS
+    "@xyflow/react":  "latest",  // The skill map
+    "@google/genai":  "latest"   // The AI part of AI-Era
+  },
+
+  "devDependencies": {
+    "bun":            "latest",  // Fast. Very fast.
+    "postgresql":     "15.x",    // The database
+    "docker":         "*"        // Ships anywhere
+  },
+
+  "scripts": {
+    "dev":     "bun run dev",
+    "build":   "bun run build",
+    "learn":   "open https://ai-era.dev/challenges",
+    "improve": "open https://github.com/your-org/ai-era/issues"
+  }
+}`
+
+  const teamMembers = [
+    {
+      name: "Developer",
+      role: "Founder & Developer",
+      handle: "developer",
+      comment: ["Built this because I needed it."],
+    },
+  ]
 
   return (
-    <div className="min-h-screen flex justify-center p-4">
-      <div className="w-full max-w-7xl">
-        <SyncedTypewriter 
-          logoLines={asciiLogoList[0].split('\n')}
-          infoItems={infoItems}
-          logoDelay={50}
-          textDelay={100}
+    <div className="min-h-screen p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="sr-only">{t("pageTitle")}</h1>
+
+        <HeroSection
+          title={[t("hero.title.line1"), t("hero.title.line2")]}
+          subtitle={[
+            t("hero.subtitle.line1"),
+            t("hero.subtitle.line2"),
+            t("hero.subtitle.line3"),
+          ]}
+        />
+
+        <MissionSection
+          label={t("mission.label")}
+          badge={t("mission.badge")}
+          lineNumber={t("mission.lineNumber")}
+          problemText={[
+            t("mission.problem.paragraph1"),
+            t("mission.problem.paragraph2"),
+          ]}
+          solutionText={[
+            t("mission.solution.paragraph1"),
+            t("mission.solution.paragraph2"),
+          ]}
+        />
+
+        <FounderSection
+          name={t("founder.name")}
+          role={t("founder.role")}
+          handle={t("founder.handle")}
+          comment={[t("founder.comment.line1"), t("founder.comment.line2")]}
+        />
+
+        <TeamSection
+          title={t("team.title")}
+          subtitle={[t("team.subtitle.line1"), t("team.subtitle.line2")]}
+          members={teamMembers}
+        />
+
+        <OpenRolesSection
+          title={t("openRoles.title")}
+          description={[
+            t("openRoles.description.line1"),
+            t("openRoles.description.line2"),
+            t("openRoles.description.line3"),
+          ]}
+          needsLabel={t("openRoles.needsLabel")}
+          needs={[
+            t("openRoles.needs.frontend"),
+            t("openRoles.needs.backend"),
+            t("openRoles.needs.content"),
+            t("openRoles.needs.devrel"),
+          ]}
+          ctaText={t("openRoles.cta")}
+          ctaLink="https://github.com/your-org/ai-era/issues"
+        />
+
+        <StackSection title={t("stack.title")} packageJson={packageJson} />
+
+        <ContactSection
+          title={t("contact.title")}
+          links={[
+            {
+              label: t("contact.links.github.label"),
+              url: "https://github.com/your-org/ai-era",
+            },
+            {
+              label: t("contact.links.twitter.label"),
+              url: "https://twitter.com/ai_era_dev",
+            },
+          ]}
+          email={t("contact.email")}
+          okMessage={t("contact.okMessage")}
+          newsletterTitle={t("contact.newsletter.title")}
+          newsletterDescription={[
+            t("contact.newsletter.description.line1"),
+            t("contact.newsletter.description.line2"),
+          ]}
+          newsletterPlaceholder={t("contact.newsletter.placeholder")}
+          newsletterButton={t("contact.newsletter.button")}
         />
       </div>
     </div>
-  );
+  )
 }

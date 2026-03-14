@@ -27,7 +27,89 @@
     "version": "Version",
     "versionNumber": "1.0.0",
     "description": "Description",
-    "descriptionContent": "AI-Era Frontend Developer Skills Challenge Platform"
+    "descriptionContent": "AI-Era Frontend Developer Skills Challenge Platform",
+    "pageTitle": "About — AI-Era",
+    "hero": {
+      "title": {
+        "line1": "We are building the training ground",
+        "line2": "developers actually need."
+      },
+      "subtitle": {
+        "line1": "Not another tutorial site.",
+        "line2": "Not another bootcamp.",
+        "line3": "A platform built by developers who got tired of the alternatives."
+      }
+    },
+    "mission": {
+      "label": "MISSION",
+      "badge": "ACTIVE",
+      "lineNumber": "line: 001",
+      "problem": {
+        "paragraph1": "The way developers learn hasn't kept up with the way they work.",
+        "paragraph2": "AI tools didn't arrive with a manual. Neither did the new expectations placed on every developer who picks them up."
+      },
+      "solution": {
+        "paragraph1": "**AI-Era** was built to close that gap.",
+        "paragraph2": "**Real challenges. Real bugs. Real AI collaboration patterns.** The kind of practice that actually prepares you for what's in the codebase on Monday."
+      }
+    },
+    "founder": {
+      "name": "YourName",
+      "role": "Founder & Developer",
+      "handle": "yourhandle",
+      "comment": {
+        "line1": "Built this because I couldn't find",
+        "line2": "the platform I actually wanted to use."
+      }
+    },
+    "team": {
+      "title": "TEAM",
+      "subtitle": {
+        "line1": "Including contributors to open source projects",
+        "line2": "and developers who care about how we learn."
+      }
+    },
+    "openRoles": {
+      "title": "OPEN ROLES",
+      "description": {
+        "line1": "We don't have formal openings right now.",
+        "line2": "But we're always interested in people who care about how developers learn.",
+        "line3": "If that's you:"
+      },
+      "needsLabel": "needs",
+      "needs": {
+        "frontend": "frontend",
+        "backend": "backend",
+        "content": "content",
+        "devrel": "devrel"
+      },
+      "cta": "open an issue on GitHub and say hello."
+    },
+    "stack": {
+      "title": "STACK"
+    },
+    "contact": {
+      "title": "./contact.sh",
+      "links": {
+        "github": {
+          "label": "GitHub (bugs, features, discussions)"
+        },
+        "twitter": {
+          "label": "Twitter / X"
+        }
+      },
+      "email": "hello@ai-era.dev",
+      "okMessage": "[OK] we read everything.",
+      "newsletter": {
+        "title": "subscribe --monthly",
+        "description": {
+          "line1": "Stay updated on new challenges,",
+          "line2": "platform updates, and developer resources."
+        },
+        "placeholder": "your@email.com",
+        "button": "SUBSCRIBE"
+      }
+    }
   },
   "categories": {
     "ai": {

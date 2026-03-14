@@ -27,7 +27,89 @@
     "version": "版本",
     "versionNumber": "1.0.0",
     "description": "描述",
-    "descriptionContent": "AI 时代前端开发者技能挑战平台"
+    "descriptionContent": "AI 时代前端开发者技能挑战平台",
+    "pageTitle": "关于 — AI-Era",
+    "hero": {
+      "title": {
+        "line1": "我们正在构建开发者",
+        "line2": "真正需要的训练场。"
+      },
+      "subtitle": {
+        "line1": "不是又一个教程网站。",
+        "line2": "不是又一个训练营。",
+        "line3": "一个由厌倦了替代方案的开发者构建的平台。"
+      }
+    },
+    "mission": {
+      "label": "使命",
+      "badge": "进行中",
+      "lineNumber": "行: 001",
+      "problem": {
+        "paragraph1": "开发者的学习方式已经跟不上他们的工作方式。",
+        "paragraph2": "AI 工具没有附带说明书。使用它们的开发者所面临的新期望也没有。"
+      },
+      "solution": {
+        "paragraph1": "**AI-Era** 的建立就是为了填补这一空白。",
+        "paragraph2": "**真实的挑战。真实的 bug。真实的 AI 协作模式。** 这种实践才能真正让你为周一的代码库做好准备。"
+      }
+    },
+    "founder": {
+      "name": "你的名字",
+      "role": "创始人 & 开发者",
+      "handle": "yourhandle",
+      "comment": {
+        "line1": "建立这个平台是因为我找不到",
+        "line2": "我真正想要使用的平台。"
+      }
+    },
+    "team": {
+      "title": "团队",
+      "subtitle": {
+        "line1": "包括开源项目的贡献者",
+        "line2": "和关心我们如何学习的开发者。"
+      }
+    },
+    "openRoles": {
+      "title": "开放职位",
+      "description": {
+        "line1": "我们目前没有正式的职位空缺。",
+        "line2": "但我们始终对关心开发者学习方式的人感兴趣。",
+        "line3": "如果那就是你："
+      },
+      "needsLabel": "需求",
+      "needs": {
+        "frontend": "前端",
+        "backend": "后端",
+        "content": "内容",
+        "devrel": "开发者关系"
+      },
+      "cta": "在 GitHub 上提交 issue 打个招呼。"
+    },
+    "stack": {
+      "title": "技术栈"
+    },
+    "contact": {
+      "title": "./contact.sh",
+      "links": {
+        "github": {
+          "label": "GitHub (bug、功能、讨论)"
+        },
+        "twitter": {
+          "label": "Twitter / X"
+        }
+      },
+      "email": "hello@ai-era.dev",
+      "okMessage": "[OK] 我们会阅读所有消息。",
+      "newsletter": {
+        "title": "subscribe --monthly",
+        "description": {
+          "line1": "获取新挑战、",
+          "line2": "平台更新和开发者资源的最新信息。"
+        },
+        "placeholder": "your@email.com",
+        "button": "订阅"
+      }
+    }
   },
   "categories": {
     "ai": {
