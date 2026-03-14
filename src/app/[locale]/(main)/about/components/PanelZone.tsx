@@ -32,7 +32,8 @@ export function PanelZone({ uptime, mouseX, mouseY }: PanelZoneProps) {
   ]
 
   return (
-    <div className="h-[30vh] px-6 md:px-8 py-6 grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr] gap-6 md:gap-12 border-t border-border bg-background overflow-y-auto md:overflow-visible">
+    <div className="h-[30vh] px-6 md:px-8 py-6 border-t border-border bg-background overflow-y-auto md:overflow-visible">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr] gap-6 md:gap-12">
       {/* Column 1: Bio */}
       <div className="space-y-3">
         <div className="flex justify-between items-center">
@@ -113,6 +114,7 @@ export function PanelZone({ uptime, mouseX, mouseY }: PanelZoneProps) {
           <div>X: {mouseX.toString().padStart(4, "0")} Y: {mouseY.toString().padStart(4, "0")}</div>
           <div>UPTIME: {uptime}</div>
         </div>
+      </div>
       </div>
     </div>
   )

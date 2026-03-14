@@ -144,7 +144,7 @@ export function TerminalCanvas({ onMouseMove }: TerminalCanvasProps) {
       />
 
       {/* Headline */}
-      <div className="absolute bottom-8 left-8 z-10 max-w-4xl">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 w-full max-w-7xl px-8">
         <div
           ref={headlineRef}
           onMouseEnter={handleMouseEnter}
