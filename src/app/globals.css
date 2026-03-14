@@ -835,6 +835,266 @@ body {
 }
 
 /* ============================================
+   AUTH BANNER FOR GUEST USERS
+   ============================================ */
+
+.auth-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--muted);
+  border: 1px dashed var(--border);
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.auth-banner-icon {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.auth-banner-text {
+  color: var(--muted-foreground);
+  flex: 1;
+}
+
+.auth-banner-btn-register {
+  padding: 4px 12px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.auth-banner-btn-register:hover {
+  opacity: 0.9;
+}
+
+.auth-banner-btn-login {
+  padding: 4px 12px;
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.auth-banner-btn-login:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.auth-banner-close {
+  background: transparent;
+  border: none;
+  color: var(--muted-foreground);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.auth-banner-close:hover {
+  color: var(--destructive);
+}
+
+/* ============================================
+   GUEST CHALLENGE VIEW - FILE SYSTEM TREE
+   ============================================ */
+
+.guest-challenge-view {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-tree-container {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  overflow-x: auto;
+}
+
+.file-tree {
+  color: var(--foreground);
+}
+
+.file-tree-root {
+  color: var(--primary);
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.file-tree-category-wrapper {
+  margin-left: 0;
+}
+
+.file-tree-category {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.file-tree-category:hover {
+  background: var(--muted);
+}
+
+.file-tree-category-icon {
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+
+.file-tree-category-name {
+  font-weight: bold;
+  color: var(--foreground);
+}
+
+.file-tree-category-count {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  margin-left: auto;
+}
+
+.file-tree-challenges {
+  margin-left: 24px;
+}
+
+.file-tree-challenge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 8px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 100ms ease, transform 100ms ease;
+  animation: tree-fade-in 200ms ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes tree-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.file-tree-challenge-hover {
+  background: color-mix(in srgb, var(--primary) 5%, transparent);
+}
+
+.file-tree-challenge-prefix {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.file-tree-challenge-name {
+  color: var(--foreground);
+  flex: 1;
+}
+
+.file-tree-challenge-hover .file-tree-challenge-name {
+  color: var(--primary);
+}
+
+.file-tree-challenge-difficulty {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: transform 100ms ease;
+}
+
+.file-tree-challenge-hover .file-tree-challenge-difficulty {
+  transform: scale(1.05);
+}
+
+.file-tree-challenge-status {
+  font-size: 11px;
+  color: var(--border);
+  min-width: 50px;
+  text-align: right;
+}
+
+.file-tree-challenge-hover .file-tree-challenge-status {
+  color: var(--primary);
+}
+
+.file-tree-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.file-tree-stats {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.file-tree-login-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.file-tree-login-btn:hover {
+  text-shadow: 0 0 8px var(--primary);
+}
+
+/* ============================================
+   CHALLENGE PREVIEW PANEL
+   ============================================ */
+
+.challenge-preview {
+  height: 48px;
+  overflow: hidden;
+  transition: height 200ms ease-out;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  padding: 16px;
+}
+
+.challenge-preview-expanded {
+  height: auto;
+}
+
+/* ============================================
+   SKILL TREE UNLOCKED BANNER
+   ============================================ */
+
+.skill-tree-unlocked-banner {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  z-index: 1000;
+  box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.4);
+}
+
+/* ============================================
    RESPONSIVE STYLES FOR SKILL TREE
    ============================================ */
 
@@ -885,4 +1145,81 @@ body {
   .node-detail-panel {
     padding: 8px;
   }
+}
+
+/* ============================================
+   REACT FLOW STYLES OVERRIDE
+   ============================================ */
+
+/* Hide default attribution */
+.react-flow__attribution {
+  display: none !important;
+}
+
+/* Canvas background */
+.react-flow__background {
+  background-color: var(--background) !important;
+}
+
+/* Remove default blue outline from nodes */
+.react-flow__node:focus,
+.react-flow__node:focus-visible {
+  outline: none !important;
+}
+
+/* Edge path - remove default marker */
+.react-flow__edge-path {
+  marker-end: none;
+}
+
+/* Selection box */
+.react-flow__selection {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  border: 1px dashed var(--primary);
+}
+
+/* Minimap styles */
+.react-flow__minimap {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+}
+
+.react-flow__minimap-mask {
+  fill: color-mix(in srgb, var(--background) 80%, transparent);
+}
+
+.react-flow__minimap-node {
+  fill: var(--border);
+}
+
+/* Controls styles */
+.react-flow__controls {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.react-flow__controls-button {
+  background: var(--card);
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  border-radius: 0;
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: none;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* Edge selection */
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--primary);
+  stroke-width: 2;
 }

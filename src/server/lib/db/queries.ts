@@ -1,5 +1,5 @@
 import { db } from '../db/index';
-import { categories, challenges, challengeResources, challengeDependencies } from '../db/schema';
+import { categories, challenges, challengeResources, challengeDependencies, type User } from '../db/schema';
 import { eq, asc, and, like, or, sql } from 'drizzle-orm';
 
 export interface CategoryWithChallenges {
@@ -411,4 +411,25 @@ export async function getAllChallengeDependencies(): Promise<ChallengeDependency
   }
 
   return Array.from(graphMap.values());
+}
+
+// User Progress
+export interface UserProgressItem {
+  challengeId: string;
+  status: 'available' | 'in_progress' | 'completed';
+  completedAt: Date | null;
+}
+
+export async function getUserProgress(userId: string): Promise<UserProgressItem[]> {
+  // Note: This is a placeholder implementation.
+  // In a real implementation, you would query a user_progress table.
+  // For now, return empty array to allow the UI to work.
+  return [];
+}
+
+export async function getCurrentUser(): Promise<User | null> {
+  // Note: This is a placeholder implementation.
+  // In a real implementation, you would get the current user from the session.
+  // For now, return null to indicate not logged in.
+  return null;
 }

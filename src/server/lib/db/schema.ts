@@ -84,6 +84,7 @@ export const challenges = pgTable('challenges', {
   description: text('description'),
   difficulty: text('difficulty').notNull(),
   language: text('language').notNull().default('en'),
+  displayOrder: integer('display_order').default(0),
   starterCode: json('starter_code').$type<ChallengeFile[]>(),
   isPublished: boolean('is_published').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

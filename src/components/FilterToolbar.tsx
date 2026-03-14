@@ -12,6 +12,7 @@ interface FilterToolbarProps {
   onStatusChange: (status: string | null) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  showStatusFilter?: boolean;
 }
 
 const DIFFICULTIES = ['EASY', 'MEDIUM', 'HARD', 'EXPERT'];
@@ -27,6 +28,7 @@ export default function FilterToolbar({
   onStatusChange,
   searchQuery,
   onSearchChange,
+  showStatusFilter = true,
 }: FilterToolbarProps) {
   return (
     <div className="filter-toolbar">
@@ -62,20 +64,22 @@ export default function FilterToolbar({
         </select>
       </div>
 
-      <div className="flex items-center gap-2">
-        <label className="text-xs opacity-60">status:</label>
-        <select
-          className="filter-select"
-          value={selectedStatus || ''}
-          onChange={(e) => onStatusChange(e.target.value || null)}
-        >
-          {STATUSES.map((status) => (
-            <option key={status} value={status === 'ALL' ? '' : status.toLowerCase()}>
-              {status}
-            </option>
-          ))}
-        </select>
-      </div>
+      {showStatusFilter && (
+        <div className="flex items-center gap-2">
+          <label className="text-xs opacity-60">status:</label>
+          <select
+            className="filter-select"
+            value={selectedStatus || ''}
+            onChange={(e) => onStatusChange(e.target.value || null)}
+          >
+            {STATUSES.map((status) => (
+              <option key={status} value={status === 'ALL' ? '' : status.toLowerCase()}>
+                {status}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="flex-1 flex justify-end">
         <div className="flex items-center gap-2">
