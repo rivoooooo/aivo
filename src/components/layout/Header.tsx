@@ -51,17 +51,19 @@ export function Header() {
       )}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 h-full">
-        <div className="flex justify-between items-center h-full">
-          {/* Logo */}
-          <Link
-            href={`/${locale}`}
-            className="text-sm font-bold tracking-wider text-glow hover:opacity-80 transition-opacity"
-          >
-            AI-Era<span className="animate-blink">_</span>
-          </Link>
+        <div className="flex items-center h-full">
+          {/* Logo - Left */}
+          <div className="flex-1">
+            <Link
+              href={`/${locale}`}
+              className="text-sm font-bold tracking-wider text-glow hover:opacity-80 transition-opacity"
+            >
+              AI-Era<span className="animate-blink">_</span>
+            </Link>
+          </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* Desktop Navigation - Center */}
+          <nav className="hidden md:flex flex-auto justify-center items-center gap-1">
             {navItems.map((item) => {
               const active = isActive(item.href);
               return (
@@ -97,8 +99,8 @@ export function Header() {
             })}
           </nav>
 
-          {/* Language Switcher, Theme Toggle, Auth Section & Mobile Menu Button */}
-          <div className="flex items-center">
+          {/* Language Switcher, Theme Toggle, Auth Section & Mobile Menu Button - Right */}
+          <div className="flex-1 flex items-center justify-end">
             <div className="hidden md:flex items-center gap-2">
               <button
                 type="button"
