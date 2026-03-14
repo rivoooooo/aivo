@@ -7,128 +7,17 @@
 /* ============================================
    TERMINAL CLI DESIGN SYSTEM - CSS VARIABLES
    Dual Theme Support: Light (default) & Dark
+   ============================================
+   
+   NOTE: CSS variables are defined at the end of this file
+   in the "COLOR THEME SYSTEM" section to support 5 color themes.
+   
+   Variable precedence (highest to lowest):
+   1. html[data-theme="xxx"].dark -> Dark mode with specific color theme
+   2. html[data-theme="xxx"]      -> Light mode with specific color theme
+   3. html.dark                   -> Dark mode default (phosphor)
+   4. html                        -> Light mode default (phosphor)
    ============================================ */
-
-/* Light Mode (Default) - Paper/Ink Aesthetic */
-:root {
-  /* Background Hierarchy */
-  --background: #f5f5f0;
-  --foreground: #1a3d1a;
-  --card: #ffffff;
-  --card-foreground: #1a3d1a;
-  --popover: #ffffff;
-  --popover-foreground: #1a3d1a;
-
-  /* Functional Colors */
-  --primary: #2d8a2d;
-  --primary-foreground: #ffffff;
-  --secondary: #cc8800;
-  --secondary-foreground: #0a0a0a;
-
-  /* Semantic Colors */
-  --success: #2d8a2d;
-  --warning: #cc8800;
-  --error: #cc3333;
-  --info: #0088cc;
-
-  /* Auxiliary Colors */
-  --muted: #e8e8e0;
-  --muted-foreground: #5a7a5a;
-  --accent: #2d8a2d;
-  --accent-foreground: #ffffff;
-  --destructive: #cc3333;
-  --destructive-foreground: #ffffff;
-
-  /* Border & Input */
-  --border: #c4d4c4;
-  --input: #c4d4c4;
-  --ring: #2d8a2d;
-
-  /* Radius - Terminal has no rounded corners */
-  --radius: 0px;
-
-  /* Glow Effect - Subdued for light mode */
-  --glow: 0 0 3px rgba(45, 138, 45, 0.3);
-
-  /* Primary RGB for animations */
-  --primary-rgb: 45, 138, 45;
-
-  /* Chart Colors */
-  --chart-1: #2d8a2d;
-  --chart-2: #cc8800;
-  --chart-3: #e67e00;
-  --chart-4: #cc3333;
-  --chart-5: #5a7a5a;
-
-  /* Sidebar Colors */
-  --sidebar: #f5f5f0;
-  --sidebar-foreground: #1a3d1a;
-  --sidebar-primary: #2d8a2d;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e8e8e0;
-  --sidebar-accent-foreground: #1a3d1a;
-  --sidebar-border: #c4d4c4;
-  --sidebar-ring: #2d8a2d;
-}
-
-/* Dark Mode - Classic Terminal */
-.dark {
-  /* Background Hierarchy */
-  --background: #0a0a0a;
-  --foreground: #33ff00;
-  --card: #0f0f0f;
-  --card-foreground: #33ff00;
-  --popover: #0f0f0f;
-  --popover-foreground: #33ff00;
-
-  /* Functional Colors */
-  --primary: #33ff00;
-  --primary-foreground: #0a0a0a;
-  --secondary: #ffb000;
-  --secondary-foreground: #0a0a0a;
-
-  /* Semantic Colors */
-  --success: #33ff00;
-  --warning: #ffb000;
-  --error: #ff3333;
-  --info: #00ffff;
-
-  /* Auxiliary Colors */
-  --muted: #1a3d1a;
-  --muted-foreground: #66ff66;
-  --accent: #33ff00;
-  --accent-foreground: #0a0a0a;
-  --destructive: #ff3333;
-  --destructive-foreground: #0a0a0a;
-
-  /* Border & Input */
-  --border: #1f521f;
-  --input: #1f521f;
-  --ring: #33ff00;
-
-  /* Glow Effect - Strong for dark mode */
-  --glow: 0 0 5px rgba(51, 255, 0, 0.5);
-
-  /* Primary RGB for animations */
-  --primary-rgb: 51, 255, 0;
-
-  /* Chart Colors */
-  --chart-1: #33ff00;
-  --chart-2: #ffb000;
-  --chart-3: #ff6600;
-  --chart-4: #ff3333;
-  --chart-5: #1f521f;
-
-  /* Sidebar Colors */
-  --sidebar: #0a0a0a;
-  --sidebar-foreground: #33ff00;
-  --sidebar-primary: #33ff00;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #1a3d1a;
-  --sidebar-accent-foreground: #33ff00;
-  --sidebar-border: #1f521f;
-  --sidebar-ring: #33ff00;
-}
 
 /* ============================================
    TAILWIND V4 THEME MAPPING
@@ -1222,4 +1111,257 @@ body {
 .react-flow__edge.selected .react-flow__edge-path {
   stroke: var(--primary);
   stroke-width: 2;
+}
+
+/* ============================================
+   THEME SWITCHER POPUP ANIMATION
+   ============================================ */
+
+@keyframes themePopIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   DARK/LIGHT MODE - Base Variables
+   Controlled by .dark class (next-themes)
+   ============================================ */
+
+/* Light Mode (Default) */
+:root {
+  /* Background & Text */
+  --background:           #f5f5f0;
+  --foreground:           #1a1a1a;
+  --card:                 #ffffff;
+  --card-foreground:      #1a1a1a;
+  --popover:              #ffffff;
+  --popover-foreground:   #1a1a1a;
+  
+  /* UI Elements */
+  --border:               #d4d4d4;
+  --input:                #d4d4d4;
+  --ring:                 var(--primary);
+  --muted:                #e8e8e0;
+  --muted-foreground:     #666666;
+  
+  /* Glow Effect */
+  --glow:                 0 0 3px rgba(var(--primary-rgb), 0.3);
+  
+  /* Sidebar */
+  --sidebar:              #f5f5f0;
+  --sidebar-foreground:   #1a1a1a;
+  --sidebar-accent:       #e8e8e0;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border:       #d4d4d4;
+  --sidebar-ring:         var(--primary);
+  
+  /* Radius */
+  --radius:               0px;
+}
+
+/* Dark Mode */
+.dark {
+  /* Background & Text */
+  --background:           #0a0a0a;
+  --foreground:           #e0e0e0;
+  --card:                 #141414;
+  --card-foreground:      #e0e0e0;
+  --popover:              #141414;
+  --popover-foreground:   #e0e0e0;
+  
+  /* UI Elements */
+  --border:               #2a2a2a;
+  --input:                #2a2a2a;
+  --ring:                 var(--primary);
+  --muted:                #1a1a1a;
+  --muted-foreground:     #888888;
+  
+  /* Glow Effect */
+  --glow:                 0 0 5px rgba(var(--primary-rgb), 0.5);
+  
+  /* Sidebar */
+  --sidebar:              #0a0a0a;
+  --sidebar-foreground:   #e0e0e0;
+  --sidebar-accent:       #1a1a1a;
+  --sidebar-accent-foreground: #e0e0e0;
+  --sidebar-border:       #2a2a2a;
+  --sidebar-ring:         var(--primary);
+}
+
+/* ============================================
+   THEME COLOR SYSTEM - 5 Color Schemes
+   Controlled by data-theme-color attribute
+   Only defines color values, not dark/light
+   ============================================ */
+
+/* Theme 0: PHOSPHOR (Green) - Default */
+:root,
+:root[data-theme-color="phosphor"] {
+  --primary:              #33ff00;
+  --primary-foreground:   #0a0a0a;
+  --primary-rgb:          51, 255, 0;
+  
+  --secondary:            #ffb000;
+  --secondary-foreground: #0a0a0a;
+  
+  --accent:               #33ff00;
+  --accent-foreground:    #0a0a0a;
+  
+  --destructive:          #ff3333;
+  --destructive-foreground: #0a0a0a;
+  
+  --success:              #33ff00;
+  --warning:              #ffb000;
+  --error:                #ff3333;
+  --info:                 #00ffff;
+  
+  --chart-1:              #33ff00;
+  --chart-2:              #ffb000;
+  --chart-3:              #ff6600;
+  --chart-4:              #ff3333;
+  --chart-5:              #1f521f;
+  
+  --sidebar-primary:      #33ff00;
+  --sidebar-primary-foreground: #0a0a0a;
+  
+  --theme-name:           "PHOSPHOR";
+  --theme-dot:            #33ff00;
+}
+
+/* Theme 1: WINDOWS (Blue) */
+:root[data-theme-color="windows"] {
+  --primary:              #00aaff;
+  --primary-foreground:   #000814;
+  --primary-rgb:          0, 170, 255;
+  
+  --secondary:            #ffcc00;
+  --secondary-foreground: #000814;
+  
+  --accent:               #00aaff;
+  --accent-foreground:    #000814;
+  
+  --destructive:          #ff4444;
+  --destructive-foreground: #000814;
+  
+  --success:              #00ff88;
+  --warning:              #ffcc00;
+  --error:                #ff4444;
+  --info:                 #00aaff;
+  
+  --chart-1:              #00aaff;
+  --chart-2:              #ffcc00;
+  --chart-3:              #ff8800;
+  --chart-4:              #ff4444;
+  --chart-5:              #003366;
+  
+  --sidebar-primary:      #00aaff;
+  --sidebar-primary-foreground: #000814;
+  
+  --theme-name:           "WINDOWS";
+  --theme-dot:            #00aaff;
+}
+
+/* Theme 2: EMBER (Orange) */
+:root[data-theme-color="ember"] {
+  --primary:              #ff8800;
+  --primary-foreground:   #0d0800;
+  --primary-rgb:          255, 136, 0;
+  
+  --secondary:            #ffcc44;
+  --secondary-foreground: #0d0800;
+  
+  --accent:               #ff8800;
+  --accent-foreground:    #0d0800;
+  
+  --destructive:          #ff3333;
+  --destructive-foreground: #0d0800;
+  
+  --success:              #88cc00;
+  --warning:              #ffcc44;
+  --error:                #ff3333;
+  --info:                 #ff8800;
+  
+  --chart-1:              #ff8800;
+  --chart-2:              #ffcc44;
+  --chart-3:              #ffaa00;
+  --chart-4:              #ff3333;
+  --chart-5:              #4d2800;
+  
+  --sidebar-primary:      #ff8800;
+  --sidebar-primary-foreground: #0d0800;
+  
+  --theme-name:           "EMBER";
+  --theme-dot:            #ff8800;
+}
+
+/* Theme 3: ALARM (Red) */
+:root[data-theme-color="alarm"] {
+  --primary:              #ff2244;
+  --primary-foreground:   #0d0005;
+  --primary-rgb:          255, 34, 68;
+  
+  --secondary:            #ff8800;
+  --secondary-foreground: #0d0005;
+  
+  --accent:               #ff2244;
+  --accent-foreground:    #0d0005;
+  
+  --destructive:          #ff0000;
+  --destructive-foreground: #0d0005;
+  
+  --success:              #00ff88;
+  --warning:              #ff8800;
+  --error:                #ff0000;
+  --info:                 #ff2244;
+  
+  --chart-1:              #ff2244;
+  --chart-2:              #ff8800;
+  --chart-3:              #ff5500;
+  --chart-4:              #ff0000;
+  --chart-5:              #4d0015;
+  
+  --sidebar-primary:      #ff2244;
+  --sidebar-primary-foreground: #0d0005;
+  
+  --theme-name:           "ALARM";
+  --theme-dot:            #ff2244;
+}
+
+/* Theme 4: VOID (Purple) */
+:root[data-theme-color="void"] {
+  --primary:              #cc44ff;
+  --primary-foreground:   #08000d;
+  --primary-rgb:          204, 68, 255;
+  
+  --secondary:            #ff44aa;
+  --secondary-foreground: #08000d;
+  
+  --accent:               #cc44ff;
+  --accent-foreground:    #08000d;
+  
+  --destructive:          #ff3366;
+  --destructive-foreground: #08000d;
+  
+  --success:              #44ffaa;
+  --warning:              #ffaa00;
+  --error:                #ff3366;
+  --info:                 #cc44ff;
+  
+  --chart-1:              #cc44ff;
+  --chart-2:              #ff44aa;
+  --chart-3:              #ff88cc;
+  --chart-4:              #ff3366;
+  --chart-5:              #3d0066;
+  
+  --sidebar-primary:      #cc44ff;
+  --sidebar-primary-foreground: #08000d;
+  
+  --theme-name:           "VOID";
+  --theme-dot:            #cc44ff;
 }

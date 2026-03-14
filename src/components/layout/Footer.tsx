@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -39,6 +40,9 @@ export function Footer() {
                 <span className="text-success text-xs">[OK] operational</span>
               </div>
             </div>
+
+            {/* 主题切换器 */}
+            <ThemeSwitcher />
           </div>
 
           <div>

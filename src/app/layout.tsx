@@ -46,6 +46,16 @@ export const metadata: Metadata = {
   },
 };
 
+const themeScript = `
+  (function() {
+    // 颜色主题（只处理 data-theme-color，不处理 .dark 类，由 next-themes 管理）
+    var color = localStorage.getItem('theme-color');
+    if (color) {
+      document.documentElement.setAttribute('data-theme-color', color);
+    }
+  })();
+`;
+
 export default async function RootLayout({
   children,
 }: {
@@ -56,6 +66,9 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
         className={`${jetbrains.variable} antialiased`}
         style={{ 
