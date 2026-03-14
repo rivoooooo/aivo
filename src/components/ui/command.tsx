@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Command } from "cmdk"
-import { Search as SearchIcon, Check as CheckIcon } from "lucide-react"
+import { Search as SearchIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
   Dialog,
@@ -12,17 +12,22 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-function CommandPalette({
-  title = "命令面板",
-  description = "Search for a command to run...",
-  searchText = "SEARCH",
-  className,
-  ...props
-}: React.ComponentProps<typeof Command> & {
-  title?: string
-  description?: string
-  searchText?: string
-}) {
+interface CommandPaletteContextValue {
+  open: boolean
+  setOpen: (open: boolean) => void
+}
+
+const CommandPaletteContext = React.createContext<CommandPaletteContextValue | null>(null)
+
+export function useCommandPalette() {
+  const context = React.useContext(CommandPaletteContext)
+  if (!context) {
+    throw new Error("useCommandPalette must be used within a CommandPaletteProvider")
+  }
+  return context
+}
+
+export function CommandPaletteProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false)
 
   React.useEffect(() => {
@@ -38,31 +43,39 @@ function CommandPalette({
   }, [])
 
   return (
-    <>
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-4 right-4 z-50 flex items-center gap-2 px-3 py-2 text-xs border border-border bg-background text-foreground hover:bg-muted transition-all cursor-pointer"
+    <CommandPaletteContext.Provider value={{ open, setOpen }}>
+      {children}
+    </CommandPaletteContext.Provider>
+  )
+}
+
+function CommandPalette({
+  title = "命令面板",
+  description = "Search for a command to run...",
+  className,
+  ...props
+}: React.ComponentProps<typeof Command> & {
+  title?: string
+  description?: string
+}) {
+  const { open, setOpen } = useCommandPalette()
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogHeader className="sr-only">
+        <DialogTitle>{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
+      </DialogHeader>
+      <DialogContent
+        className={cn(
+          "top-[15%] translate-y-0 overflow-hidden rounded-none! p-0 border border-border bg-background sm:max-w-3xl",
+          className
+        )}
+        showCloseButton={false}
       >
-        <span className="opacity-70">CTRL+K</span>
-        <span className="text-glow">{searchText}</span>
-      </button>
-      
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogHeader className="sr-only">
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
-        <DialogContent
-          className={cn(
-            "top-[15%] translate-y-0 overflow-hidden rounded-none! p-0 border border-border bg-background sm:max-w-3xl",
-            className
-          )}
-          showCloseButton={false}
-        >
-          <Command {...props} />
-        </DialogContent>
-      </Dialog>
-    </>
+        <Command {...props} />
+      </DialogContent>
+    </Dialog>
   )
 }
 

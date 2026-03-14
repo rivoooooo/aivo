@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, Terminal } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/mode-toggle";
 import { AuthSection } from "@/components/auth/AuthSection";
+import { useCommandPalette } from "@/components/ui/command";
 
 interface NavItem {
   href: string;
@@ -20,6 +21,12 @@ export function Header() {
   const locale = useLocale();
   const t = useTranslations("nav");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMac, setIsMac] = useState(false);
+  const { setOpen } = useCommandPalette();
+
+  useEffect(() => {
+    setIsMac(navigator.platform.toUpperCase().indexOf("MAC") >= 0);
+  }, []);
 
   const navItems: NavItem[] = [
     { href: `/${locale}`, label: t("home") },
@@ -92,7 +99,18 @@ export function Header() {
 
           {/* Language Switcher, Theme Toggle, Auth Section & Mobile Menu Button */}
           <div className="flex items-center">
-            <div className="hidden md:flex items-center  gap-2">
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="flex items-center gap-2 px-3 py-1.5 text-sm hover:text-primary transition-colors cursor-pointer"
+                aria-label="Open command palette"
+              >
+                <span className="text-muted-foreground font-medium">{isMac ? "Cmd" : "Ctrl"}</span>
+                <span className="text-muted-foreground/50 font-bold">+</span>
+                <span className="text-muted-foreground font-medium">K</span>
+                <Terminal className="w-5 h-5" />
+              </button>
               <LanguageSwitcher />
               <ModeToggle />
               <AuthSection />
@@ -154,6 +172,17 @@ export function Header() {
                 );
               })}
               <div className="flex items-center gap-4 pt-2 border-t border-border mt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(true);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="flex items-center justify-center w-8 h-8 text-sm hover:text-primary transition-colors"
+                  aria-label="Open command palette"
+                >
+                  <Terminal className="w-5 h-5" />
+                </button>
                 <div className="flex-1">
                   <LanguageSwitcher />
                 </div>

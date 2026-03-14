@@ -51,7 +51,6 @@ export function CommandPaletteWrapper() {
     <CommandPalette 
       title={t("title")} 
       description={t("description")}
-      searchText={t("title")}
     >
       <CommandInput placeholder={t("placeholder")} />
       <CommandList>
