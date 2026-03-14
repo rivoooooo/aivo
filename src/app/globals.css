@@ -1426,7 +1426,7 @@ body {
   --destructive-foreground: #ffffff;
   
   /* Semantic Colors */
-  --success:              #2d8a2d;
+  --success:              #668800;
   --warning:              #cc8800;
   --error:                #cc3333;
   --info:                 #cc5500;
@@ -1554,7 +1554,7 @@ body {
   --destructive-foreground: #ffffff;
   
   /* Semantic Colors */
-  --success:              #2d8a2d;
+  --success:              #008844;
   --warning:              #cc8800;
   --error:                #cc0000;
   --info:                 #cc0022;
@@ -1682,7 +1682,7 @@ body {
   --destructive-foreground: #ffffff;
   
   /* Semantic Colors */
-  --success:              #2d8a2d;
+  --success:              #008866;
   --warning:              #cc8800;
   --error:                #cc0033;
   --info:                 #8800cc;
