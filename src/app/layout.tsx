@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { JetBrains_Mono, Geist } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { getLocale } from 'next-intl/server';
-import { getMessages } from 'next-intl/server';
+import { getLocale, getMessages } from 'next-intl/server';
 import Providers from '@/components/providers';
+import { Suspense } from 'react';
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -56,16 +56,23 @@ const themeScript = `
   })();
 `;
 
-export default async function RootLayout({
+async function RootLayoutInner({ children }: { children: React.ReactNode }) {
+  const messages = await getMessages()
+  
+  return (
+    <Providers messages={messages}>
+      {children}
+    </Providers>
+  )
+}
+
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const locale = await getLocale();
-  const messages = await getMessages();
-
   return (
-    <html lang={locale} suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
@@ -75,9 +82,11 @@ export default async function RootLayout({
           fontFamily: "var(--font-jetbrains), monospace",
         }}
       >
-        <Providers messages={messages}>
-          {children}
-        </Providers>
+        <Suspense fallback={null}>
+          <RootLayoutInner>
+            {children}
+          </RootLayoutInner>
+        </Suspense>
       </body>
     </html>
   );
