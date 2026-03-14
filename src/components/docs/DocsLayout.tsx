@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { DocCategoryGroup, DocMeta, Heading } from '@/types/docs'
 
 interface DocsLayoutProps {
@@ -12,6 +12,7 @@ interface DocsLayoutProps {
   headings?: Heading[]
   prevDoc?: DocMeta
   nextDoc?: DocMeta
+  locale?: string
 }
 
 export default function DocsLayout({
@@ -21,6 +22,7 @@ export default function DocsLayout({
   headings = [],
   prevDoc,
   nextDoc,
+  locale = 'en',
 }: DocsLayoutProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false)
@@ -33,7 +35,6 @@ export default function DocsLayout({
   const [activeHeadingId, setActiveHeadingId] = useState<string>('')
   const searchInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
-  const pathname = usePathname()
 
   const allDocs = categories.flatMap(c => c.docs)
   const filteredDocs = searchQuery
@@ -72,11 +73,11 @@ export default function DocsLayout({
       }
 
       if (e.key === '[' && !isInputFocused && prevDoc) {
-        router.push(`/docs/${prevDoc.slug}`)
+        router.push(`/${locale}/docs/${prevDoc.slug}`)
       }
 
       if (e.key === ']' && !isInputFocused && nextDoc) {
-        router.push(`/docs/${nextDoc.slug}`)
+        router.push(`/${locale}/docs/${nextDoc.slug}`)
       }
 
       if (e.key === 'g' && !isInputFocused) {
@@ -92,7 +93,7 @@ export default function DocsLayout({
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
       }
 
-      if (isSearchOpen && !isInputFocused) {
+      if (isSearchOpen) {
         if (e.key === 'ArrowDown') {
           e.preventDefault()
           setSelectedIndex(prev => Math.min(prev + 1, filteredDocs.length - 1))
@@ -102,7 +103,7 @@ export default function DocsLayout({
           setSelectedIndex(prev => Math.max(prev - 1, 0))
         }
         if (e.key === 'Enter' && filteredDocs[selectedIndex]) {
-          router.push(`/docs/${filteredDocs[selectedIndex].slug}`)
+          router.push(`/${locale}/docs/${filteredDocs[selectedIndex].slug}`)
           setIsSearchOpen(false)
           setSearchQuery('')
         }
@@ -111,7 +112,7 @@ export default function DocsLayout({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isSearchOpen, filteredDocs, selectedIndex, prevDoc, nextDoc, router])
+  }, [isSearchOpen, filteredDocs, selectedIndex, prevDoc, nextDoc, locale, router])
 
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
@@ -165,15 +166,17 @@ export default function DocsLayout({
   }
 
   const groupedFilteredDocs = searchQuery
-    ? categories.map(cat => ({
-        ...cat,
-        docs: cat.docs.filter(
-          doc =>
-            doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            doc.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            doc.slug.toLowerCase().includes(searchQuery.toLowerCase())
-        ),
-      })).filter(cat => cat.docs.length > 0)
+    ? categories
+        .map(cat => ({
+          ...cat,
+          docs: cat.docs.filter(
+            doc =>
+              doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              doc.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              doc.slug.toLowerCase().includes(searchQuery.toLowerCase())
+          ),
+        }))
+        .filter(cat => cat.docs.length > 0)
     : categories
 
   return (
@@ -224,7 +227,7 @@ export default function DocsLayout({
                     {category.docs.map((doc, idx) => (
                       <Link
                         key={doc.slug}
-                        href={`/docs/${doc.slug}`}
+                        href={`/${locale}/docs/${doc.slug}`}
                         className={`flex items-center gap-1 px-4 py-1 text-[12px] font-mono transition-colors border-l-2 ${
                           currentSlug === doc.slug
                             ? 'border-l-primary text-foreground bg-primary/8 font-bold'
@@ -286,7 +289,7 @@ export default function DocsLayout({
                         {category.docs.map((doc, idx) => (
                           <Link
                             key={doc.slug}
-                            href={`/docs/${doc.slug}`}
+                            href={`/${locale}/docs/${doc.slug}`}
                             onClick={() => setIsMobileMenuOpen(false)}
                             className={`flex items-center gap-1 px-4 py-1 text-xs font-mono ${
                               currentSlug === doc.slug
@@ -396,12 +399,12 @@ export default function DocsLayout({
                   <div className="px-4 py-2 text-[10px] text-muted-foreground uppercase border-b border-border/50">
                     {group.name}
                   </div>
-                  {group.docs.map((doc, idx) => {
+                  {group.docs.map((doc) => {
                     const globalIdx = allDocs.findIndex(d => d.slug === doc.slug)
                     return (
                       <Link
                         key={doc.slug}
-                        href={`/docs/${doc.slug}`}
+                        href={`/${locale}/docs/${doc.slug}`}
                         onClick={() => {
                           setIsSearchOpen(false)
                           setSearchQuery('')

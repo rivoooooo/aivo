@@ -1,5 +1,12 @@
 import { redirect } from 'next/navigation'
 
-export default function DocsPage() {
-  redirect('/docs/getting-started')
+interface DocsPageProps {
+  params: Promise<{
+    locale: string
+  }>
+}
+
+export default async function DocsPage({ params }: DocsPageProps) {
+  const { locale } = await params
+  redirect(`/${locale}/docs/getting-started`)
 }
