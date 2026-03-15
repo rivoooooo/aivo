@@ -42,12 +42,10 @@ export function AuthSection() {
   }
 
   const handleLoginClick = () => {
-    setShowRegister(false)
     setLoginOpen(true)
   }
 
   const handleRegisterClick = () => {
-    setShowRegister(true)
     setRegisterOpen(true)
   }
 
@@ -58,13 +56,11 @@ export function AuthSection() {
 
   const handleSwitchToRegister = () => {
     setLoginOpen(false)
-    setShowRegister(true)
     setRegisterOpen(true)
   }
 
   const handleSwitchToLogin = () => {
     setRegisterOpen(false)
-    setShowRegister(false)
     setLoginOpen(true)
   }
 
