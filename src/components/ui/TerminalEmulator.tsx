@@ -81,7 +81,7 @@ interface TerminalEmulatorProps {
   isVisible?: boolean
 }
 
-export function TerminalEmulator({ className, dailyShown = false, isVisible = true }: TerminalEmulatorProps) {
+export function TerminalEmulator({ className, dailyShown: _dailyShown = false, isVisible = true }: TerminalEmulatorProps) {
   const router = useRouter()
   const [input, setInput] = useState("")
   const [history, setHistory] = useState<string[]>([])

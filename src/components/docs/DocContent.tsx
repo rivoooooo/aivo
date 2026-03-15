@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Doc, DocMeta } from '@/types/docs'
+import { Doc } from '@/types/docs'
 
 interface DocContentProps {
   doc: Doc

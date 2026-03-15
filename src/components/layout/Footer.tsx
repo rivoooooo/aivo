@@ -1,16 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher"
 import { ScanlineToggle } from "@/components/ui/ScanlineToggle"
 
 export function Footer() {
-  const [currentYear, setCurrentYear] = useState<number>(2024)
-
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear())
-  }, [])
+  const [currentYear] = useState<number>(() => new Date().getFullYear())
 
   return (
     <footer className="border-t border-border pt-8 pb-10 mt-16">

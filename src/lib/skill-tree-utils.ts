@@ -7,8 +7,6 @@ import {
 } from './types/skill-tree';
 
 const DIFFICULTY_ORDER = ['EASY', 'MEDIUM', 'HARD', 'EXPERT'];
-const NODE_WIDTH = 120;
-const NODE_HEIGHT = 80;
 const COL_WIDTH = 200;
 const ROW_HEIGHT = 120;
 const PADDING = 60;
@@ -50,7 +48,7 @@ export function calculateNodePositions(
     (a, b) => a[0].localeCompare(b[0])
   );
   
-  sortedCategories.forEach(([categoryName, categoryChallenges], colIndex) => {
+  sortedCategories.forEach(([, categoryChallenges], colIndex) => {
     const sortedByDifficulty = [...categoryChallenges].sort((a, b) => {
       const aIndex = DIFFICULTY_ORDER.indexOf(a.difficulty);
       const bIndex = DIFFICULTY_ORDER.indexOf(b.difficulty);

@@ -1,18 +1,35 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from 'react';
+import { useSyncExternalStore } from 'react';
+import { ReactNode } from 'react';
 
 interface ClientOnlyProps {
   children: ReactNode;
   fallback?: ReactNode;
 }
 
-export function ClientOnly({ children, fallback = null }: ClientOnlyProps) {
-  const [mounted, setMounted] = useState(false);
+function getMountedStore() {
+  return {
+    subscribe() {
+      return () => {}
+    },
+    getSnapshot() {
+      return true
+    },
+    getServerSnapshot() {
+      return false
+    }
+  }
+}
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+const mountedStore = getMountedStore()
+
+export function ClientOnly({ children, fallback = null }: ClientOnlyProps) {
+  const mounted = useSyncExternalStore(
+    mountedStore.subscribe,
+    mountedStore.getSnapshot,
+    mountedStore.getServerSnapshot
+  )
 
   return mounted ? <>{children}</> : <>{fallback}</>;
 }

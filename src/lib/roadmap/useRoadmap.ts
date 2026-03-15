@@ -26,6 +26,18 @@ const defaultUserState: UserProgressState = {
   nodeProgress: {},
 };
 
+function calculateInitialStatus(
+  node: RoadmapNode,
+  allNodes: RoadmapNode[]
+): NodeStatus {
+  if (node.dependencies.length === 0) return 'available';
+  const depsCompleted = node.dependencies.every((depId) => {
+    const dep = allNodes.find((n) => n.id === depId);
+    return dep?.status === 'completed';
+  });
+  return depsCompleted ? 'available' : 'locked';
+}
+
 interface UseRoadmapOptions {
   roadmap: Roadmap;
   achievements: Achievement[];
@@ -125,19 +137,6 @@ export function useRoadmap({
       localStorage.setItem(STORAGE_KEY, JSON.stringify(userState));
     }
   }, [userState, autoSave, isLoaded]);
-
-  // Calculate initial status based on dependencies
-  function calculateInitialStatus(
-    node: RoadmapNode,
-    allNodes: RoadmapNode[]
-  ): NodeStatus {
-    if (node.dependencies.length === 0) return 'available';
-    const depsCompleted = node.dependencies.every((depId) => {
-      const dep = allNodes.find((n) => n.id === depId);
-      return dep?.status === 'completed';
-    });
-    return depsCompleted ? 'available' : 'locked';
-  }
 
   // Update node status
   const updateNodeStatus = useCallback(

@@ -1,22 +1,37 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { useSession } from '@/lib/hooks/use-session'
 import { GuestButtons } from './GuestButtons'
 import { UserMenu } from './UserMenu'
 import { LoginModal } from './LoginModal'
 import { RegisterModal } from './RegisterModal'
 
+function getMountedStore() {
+  return {
+    subscribe() {
+      return () => {}
+    },
+    getSnapshot() {
+      return true
+    },
+    getServerSnapshot() {
+      return false
+    }
+  }
+}
+
+const mountedStore = getMountedStore()
+
 export function AuthSection() {
   const { session, loading } = useSession()
-  const [mounted, setMounted] = useState(false)
+  const mounted = useSyncExternalStore(
+    mountedStore.subscribe,
+    mountedStore.getSnapshot,
+    mountedStore.getServerSnapshot
+  )
   const [loginOpen, setLoginOpen] = useState(false)
   const [registerOpen, setRegisterOpen] = useState(false)
-  const [showRegister, setShowRegister] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   if (!mounted) {
     return <div className="flex items-center w-[140px]" />

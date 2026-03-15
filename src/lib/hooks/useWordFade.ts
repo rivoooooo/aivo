@@ -1,6 +1,31 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useSyncExternalStore } from "react"
+
+function getReducedMotionStore() {
+  return {
+    subscribe() {
+      return () => {}
+    },
+    getSnapshot() {
+      if (typeof window === 'undefined') return true
+      return !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    },
+    getServerSnapshot() {
+      return true
+    }
+  }
+}
+
+const reducedMotionStore = getReducedMotionStore()
+
+function useReducedMotionSync(): boolean {
+  return useSyncExternalStore(
+    reducedMotionStore.subscribe,
+    reducedMotionStore.getSnapshot,
+    reducedMotionStore.getServerSnapshot
+  )
+}
 
 interface UseWordFadeOptions {
   words: string[]
@@ -13,28 +38,17 @@ export function useWordFade({
   stagger = 80,
   delay = 0,
 }: UseWordFadeOptions) {
-  const [visibleCount, setVisibleCount] = useState(0)
-  const [shouldAnimate, setShouldAnimate] = useState(true)
+  const shouldAnimate = useReducedMotionSync()
   const startedRef = useRef(false)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
-    setShouldAnimate(!mediaQuery.matches)
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setShouldAnimate(!e.matches)
-    }
-
-    mediaQuery.addEventListener("change", handleChange)
-    return () => mediaQuery.removeEventListener("change", handleChange)
-  }, [])
+  
+  const initialCount = shouldAnimate ? 0 : words.length
+  const [visibleCount, setVisibleCount] = useState(initialCount)
 
   useEffect(() => {
     if (startedRef.current) return
     startedRef.current = true
 
     if (!shouldAnimate) {
-      setVisibleCount(words.length)
       return
     }
 

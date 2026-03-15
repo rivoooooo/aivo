@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useSyncExternalStore } from "react"
 import Link from "next/link"
 import { useLocale } from "next-intl"
 import { useTypewriter } from "@/lib/hooks/useTypewriter"
@@ -20,6 +20,22 @@ const HERO_LINES = [
 const SEO_TEXT =
   "AI-Era is a gamified platform for training real web developer skills in the age of AI."
 
+function getMountedStore() {
+  return {
+    subscribe() {
+      return () => {}
+    },
+    getSnapshot() {
+      return true
+    },
+    getServerSnapshot() {
+      return false
+    }
+  }
+}
+
+const mountedStore = getMountedStore()
+
 export function HeroSection() {
   const locale = useLocale()
   const { displayedLines, isComplete } = useTypewriter({
@@ -28,14 +44,14 @@ export function HeroSection() {
     lineDelay: 350,
   })
 
-  const [isClient, setIsClient] = useState(false)
+  const isClient = useSyncExternalStore(
+    mountedStore.subscribe,
+    mountedStore.getSnapshot,
+    mountedStore.getServerSnapshot
+  )
   const [showStaticLayer, setShowStaticLayer] = useState(false)
   const typingLayerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   useEffect(() => {
     if (isComplete && typingLayerRef.current) {

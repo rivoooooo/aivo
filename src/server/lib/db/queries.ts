@@ -11,7 +11,7 @@ import {
   type ChallengeResource,
   type UserProgress,
 } from '../db/schema';
-import { eq, asc, and, like, or, sql, inArray, isNull, desc } from 'drizzle-orm';
+import { eq, asc, and, like, or, sql, desc, type SQL } from 'drizzle-orm';
 import type {
   ChallengeWithResources,
   ChallengeMapNode,
@@ -224,7 +224,7 @@ export async function getChallengesList(
     search,
   } = params;
 
-  const conditions: any[] = [eq(challenges.language, language)];
+  const conditions: (SQL | undefined)[] = [eq(challenges.language, language)];
 
   if (category) {
     const categoryResult = await db

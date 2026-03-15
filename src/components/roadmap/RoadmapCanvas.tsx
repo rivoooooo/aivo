@@ -37,7 +37,7 @@ const NODE_TYPE_ICONS: Record<string, string> = {
 
 export function RoadmapCanvas({
   nodes,
-  branches,
+  branches: _branches,
   onNodeClick,
   onNodeStatusChange,
   selectedNodeId,

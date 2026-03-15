@@ -80,17 +80,11 @@ const getInitialEnabled = () => {
 }
 
 export function ScanlineToggle() {
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(true)
   const [enabled, setEnabled] = useState(getInitialEnabled)
   const currentThemeColor = useThemeColor()
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!mounted) return
-
     localStorage.setItem('scanline-enabled', String(enabled))
     
     if (enabled) {
@@ -98,7 +92,7 @@ export function ScanlineToggle() {
     } else {
       removeScanline()
     }
-  }, [enabled, mounted, currentThemeColor])
+  }, [enabled, currentThemeColor])
 
   useEffect(() => {
     if (!mounted || !enabled) return

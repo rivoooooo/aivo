@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Search, Menu, X, Home, Cpu, Info } from "lucide-react";
+import { Menu, X, Home, Cpu, Info } from "lucide-react";
 import { useState } from "react";
 
 interface NavItem {
