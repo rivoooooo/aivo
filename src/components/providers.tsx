@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SessionProvider } from '@/lib/hooks/use-session'
+import { ToastProvider } from '@/components/ui/toast'
 import type { AbstractIntlMessages } from 'next-intl';
 
 interface ProvidersProps {
@@ -17,11 +18,13 @@ export default function Providers({ children, messages }: ProvidersProps) {
       enableSystem
       disableTransitionOnChange={false}
     >
-      <SessionProvider>
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-      </SessionProvider>
+      <ToastProvider>
+        <SessionProvider>
+          <NextIntlClientProvider messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </SessionProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 }

@@ -1,43 +1,23 @@
 'use client'
 
-import { useState, useSyncExternalStore } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from '@/lib/hooks/use-session'
 import { GuestButtons } from './GuestButtons'
 import { UserMenu } from './UserMenu'
 import { LoginModal } from './LoginModal'
 import { RegisterModal } from './RegisterModal'
 
-function getMountedStore() {
-  return {
-    subscribe() {
-      return () => {}
-    },
-    getSnapshot() {
-      return true
-    },
-    getServerSnapshot() {
-      return false
-    }
-  }
-}
-
-const mountedStore = getMountedStore()
-
 export function AuthSection() {
   const { session, loading } = useSession()
-  const mounted = useSyncExternalStore(
-    mountedStore.subscribe,
-    mountedStore.getSnapshot,
-    mountedStore.getServerSnapshot
-  )
+  const [mounted, setMounted] = useState(false)
   const [loginOpen, setLoginOpen] = useState(false)
   const [registerOpen, setRegisterOpen] = useState(false)
 
-  if (!mounted) {
-    return <div className="flex items-center w-[140px]" />
-  }
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-  if (loading) {
+  if (!mounted || loading) {
     return <div className="flex items-center w-[140px]" />
   }
 
@@ -70,9 +50,9 @@ export function AuthSection() {
         {session?.user ? (
           <UserMenu user={session.user} />
         ) : (
-          <GuestButtons 
-            onLoginClick={handleLoginClick} 
-            onRegisterClick={handleRegisterClick} 
+          <GuestButtons
+            onLoginClick={handleLoginClick}
+            onRegisterClick={handleRegisterClick}
           />
         )}
 

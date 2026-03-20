@@ -14,6 +14,15 @@ interface Session {
   expires: string
 }
 
+interface BetterAuthSession {
+  session: {
+    token: string
+    expiresAt: string
+    userId: string
+  }
+  user: SessionUser
+}
+
 interface SessionContextType {
   session: Session | null
   loading: boolean
@@ -36,7 +45,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       })
       if (res.ok) {
         const data = await res.json()
-        setSession(data.session)
+        if (data.session) {
+          const betterAuthSession = data.session as BetterAuthSession
+          setSession({
+            user: betterAuthSession.user,
+            expires: betterAuthSession.session.expiresAt,
+          })
+        } else {
+          setSession(null)
+        }
       } else {
         setSession(null)
       }
@@ -59,7 +76,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         credentials: 'include',
         body: JSON.stringify({ email, password }),
       })
-      
+
       if (res.ok) {
         await refreshSession()
         return {}
@@ -80,7 +97,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         credentials: 'include',
         body: JSON.stringify({ name, email, password }),
       })
-      
+
       if (res.ok) {
         await refreshSession()
         return {}

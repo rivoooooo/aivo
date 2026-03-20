@@ -19,7 +19,21 @@ export const auth = betterAuth({
     requireEmailVerification: false,
   },
   plugins: [admin()],
+  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   trustedOrigins: ['http://localhost:3000'],
+  advanced: {
+    database: {
+      generateId: () => crypto.randomUUID(),
+    },
+  },
+  session: {
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60,
+    },
+  },
 });
 
 export type Session = typeof auth.$Infer.Session.session;

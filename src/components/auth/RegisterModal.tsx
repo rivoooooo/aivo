@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/lib/hooks/use-session'
+import { useToast } from '@/components/ui/toast'
 
 interface RegisterModalProps {
   isOpen: boolean
@@ -15,6 +16,7 @@ interface RegisterModalProps {
 export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps) {
   const t = useTranslations('auth')
   const { signUp } = useSession()
+  const { toast } = useToast()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -59,15 +61,18 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
 
     if (password.length < 8) {
       setError('password must be at least 8 characters')
+      toast({ title: 'Registration failed', description: 'Password must be at least 8 characters', variant: 'error' })
       setLoading(false)
       return
     }
 
     const result = await signUp(name, email, password)
-    
+
     if (result.error) {
       setError(result.error)
+      toast({ title: 'Registration failed', description: result.error, variant: 'error' })
     } else {
+      toast({ title: 'Registration successful', description: 'Welcome to AI-Era!', variant: 'success' })
       onClose()
     }
     setLoading(false)
@@ -76,20 +81,20 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
   if (!isOpen) return null
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]"
       onClick={onClose}
     >
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-      
-      <div 
+
+      <div
         className="relative z-10 w-full max-w-[440px] min-w-[360px] mx-4"
         onClick={e => e.stopPropagation()}
       >
         <div className="terminal-window">
           <div className="terminal-header">
             <span className="terminal-title">{t('modal.registerTitle')}</span>
-            <button 
+            <button
               onClick={onClose}
               className="terminal-close"
               aria-label="Close"
@@ -97,7 +102,7 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
               <X className="w-3 h-3" />
             </button>
           </div>
-          
+
           <form onSubmit={handleSubmit} className="p-6 space-y-5">
             <div>
               <label className="terminal-label">
@@ -158,8 +163,8 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
               </div>
             )}
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full"
               disabled={loading}
             >

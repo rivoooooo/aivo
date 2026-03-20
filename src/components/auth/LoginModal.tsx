@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/lib/hooks/use-session'
+import { useToast } from '@/components/ui/toast'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -15,6 +16,7 @@ interface LoginModalProps {
 export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalProps) {
   const t = useTranslations('auth')
   const { signIn } = useSession()
+  const { toast } = useToast()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -46,10 +48,12 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
     setLoading(true)
 
     const result = await signIn(email, password)
-    
+
     if (result.error) {
       setError(result.error)
+      toast({ title: 'Login failed', description: result.error, variant: 'error' })
     } else {
+      toast({ title: 'Login successful', description: `Welcome back!`, variant: 'success' })
       onClose()
     }
     setLoading(false)
@@ -58,20 +62,20 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
   if (!isOpen) return null
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]"
       onClick={onClose}
     >
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-      
-      <div 
+
+      <div
         className="relative z-10 w-full max-w-[440px] min-w-[360px] mx-4"
         onClick={e => e.stopPropagation()}
       >
         <div className="terminal-window">
           <div className="terminal-header">
             <span className="terminal-title">{t('modal.loginTitle')}</span>
-            <button 
+            <button
               onClick={onClose}
               className="terminal-close"
               aria-label="Close"
@@ -79,7 +83,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
               <X className="w-3 h-3" />
             </button>
           </div>
-          
+
           <form onSubmit={handleSubmit} className="p-6 space-y-5">
             <div>
               <label className="terminal-label">
@@ -122,8 +126,8 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
               </div>
             )}
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full"
               disabled={loading}
             >

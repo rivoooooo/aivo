@@ -1,21 +1,27 @@
 import { pgTable, text, timestamp, uuid, integer, uniqueIndex, index, json, boolean } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
-// Better Auth 相关表 - 完全不动
+// Better Auth 相关表
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').notNull().unique(),
   name: text('name'),
   image: text('image'),
+  emailVerified: boolean('email_verified').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  role: text('role').default('user').notNull(),
+  banned: boolean('banned').default(false).notNull(),
+  banReason: text('ban_reason'),
+  banExpires: timestamp('ban_expires'),
 });
 
 export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
-  expiresAt: timestamp('expires_at'),
+  expiresAt: timestamp('expires_at').notNull(),
   token: text('token').notNull().unique(),
-  createdAt: timestamp('created_at'),
-  updatedAt: timestamp('updated_at'),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull(),
   ipAddress: text('ip_address'),
   userAgent: text('user_agent'),
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -35,20 +41,21 @@ export const accounts = pgTable('accounts', {
   refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
   scope: text('scope'),
   password: text('password'),
-  createdAt: timestamp('created_at'),
-  updatedAt: timestamp('updated_at'),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull(),
 }, (table) => ({
   userIdIdx: index('idx_accounts_user_id').on(table.userId),
-  providerIdIdx: index('idx_accounts_provider_id').on(table.providerId, table.accountId),
+  providerIdIdx: uniqueIndex('idx_accounts_provider_id_account_id').on(table.providerId, table.accountId),
 }));
 
+// verifications 表
 export const verifications = pgTable('verifications', {
   id: text('id').primaryKey(),
   identifier: text('identifier').notNull(),
   value: text('value').notNull(),
   expiresAt: timestamp('expires_at').notNull(),
-  createdAt: timestamp('created_at'),
-  updatedAt: timestamp('updated_at'),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull(),
 }, (table) => ({
   identifierIdx: index('idx_verifications_identifier').on(table.identifier),
 }));
