@@ -1,0 +1,11 @@
+{
+  "name": "@ai-era/config",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./typescript": "./typescript.json"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}

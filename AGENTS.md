@@ -3,7 +3,7 @@
 ## 项目概述
 
 - **项目名称**: ai-era-web-dev-skills
-- **项目类型**: Next.js Web 应用
+- **项目类型**: Turbo Repo Monorepo (Next.js Web 应用)
 - **核心功能**: AI 时代前端开发者技能挑战平台
 - **目标用户**: 开发者
 
@@ -11,85 +11,97 @@
 
 - **框架**: Next.js 16.1.6
 - **语言**: TypeScript
-- **包管理器**: bun
+- **包管理器**: pnpm (通过 Turbo Repo 管理)
+- **构建系统**: Turbo
 - **AI SDK**: @google/genai
-- **UI**: React 19 + Tailwind CSS 4
+- **UI**: React 19 + Tailwind CSS 4 + shadcn/ui
 - **样式**: CSS Modules / Tailwind CSS
 - **数据库**: PostgreSQL + Drizzle ORM
 
-## 项目结构
+## Monorepo 结构
 
 ```
-src/
-├── app/                        # Next.js App Router
-│   ├── [locale]/
-│   │   ├── challenge/          # 挑战页面
-│   │   │   └── [slug]/
-│   │   │       ├── page.tsx    # 挑战详情页
-│   │   │       └── playground/# 训练场页面
-│   │   │           ├── page.tsx
-│   │   │           └── components/
-│   │   ├── provider/           # AI Provider 页面
-│   │   └── page.tsx           # 首页
-│   └── api/                   # API 路由
-├── components/                 # React 组件
-├── lib/                       # 工具函数
-│   ├── api/                   # API 客户端
-│   └── hooks/                 # React Hooks
-├── server/                    # 后端服务
-│   └── lib/db/               # 数据库相关
-│       ├── schema.ts          # 表定义
-│       ├── index.ts           # 数据库连接
-│       ├── queries.ts         # 查询函数
-│       └── seed.ts            # 种子数据
-└── messages/                  # 国际化消息
+ai-era/
+├── apps/
+│   └── web/                    # Next.js 应用
+│       ├── app/                # Next.js App Router
+│       ├── components/         # 组件
+│       ├── lib/               # 工具函数
+│       ├── server/            # 后端服务
+│       └── ...
+├── packages/
+│   ├── ui/                     # shadcn/ui 组件库 (@ai-era/ui)
+│   │   └── src/
+│   │       ├── components/     # UI 组件
+│   │       └── index.ts
+│   ├── config/                 # 共享配置 (@ai-era/config)
+│   │   └── typescript.json
+│   └── db/                     # 数据库 Schema (@ai-era/db)
+│       └── src/
+├── turbo.json                  # Turbo 构建配置
+├── pnpm-workspace.yaml         # pnpm workspace 配置
+└── package.json                # 根 workspace 配置
 ```
 
 ## 常用命令
 
 | 命令 | 说明 |
 |------|------|
-| `bun run dev` | 启动开发服务器 |
-| `bun run build` | 构建生产版本 |
-| `bun run start` | 启动生产服务器 |
-| `bun run lint` | 运行 ESLint 检查 |
-| `npx tsc --noEmit` | TypeScript 类型检查 |
+| `pnpm install` | 安装所有依赖 |
+| `pnpm dev` | 启动开发服务器 (web) |
+| `pnpm build` | 构建所有包 |
+| `pnpm --filter web dev` | 仅启动 web 应用 |
+| `pnpm --filter web build` | 仅构建 web 应用 |
+| `pnpm turbo lint` | lint 所有包 |
+| `pnpm turbo clean` | 清理构建缓存 |
 
 ## 数据库命令
 
 | 命令 | 说明 |
 |------|------|
 | `docker run -d --name api-test-db -e POSTGRES_DB=api_test -e POSTGRES_USER=api_user -e POSTGRES_PASSWORD=api_password -p 5432:5432 postgres:15-alpine` | 启动 PostgreSQL 容器 |
-| `bun run db:push` | 推送 schema 到数据库 |
-| `bun run db:seed` | 导入种子数据 |
-| `bun run db:generate` | 生成迁移文件 |
+| `pnpm --filter @ai-era/web drizzle-kit push` | 推送 schema 到数据库 |
+| `pnpm --filter @ai-era/web drizzle-kit generate` | 生成迁移文件 |
+| `pnpm --filter @ai-era/web drizzle-kit studio` | 打开 Drizzle Studio |
 
 ## 已完成功能
 
-### 1. 数据库架构 (Drizzle ORM)
+### 1. Monorepo 结构 (Turbo Repo)
+- pnpm workspaces 配置
+- Turbo 构建系统
+- 独立包结构 (@ai-era/ui, @ai-era/db, @ai-era/config)
+
+### 2. 数据库架构 (Drizzle ORM)
 - PostgreSQL 数据库集成
 - Drizzle ORM 配置完整
 - 分类和挑战表结构
 
-### 2. 多语言支持
+### 3. 多语言支持
 - next-intl 国际化配置
 - 中英文语言包
 - 语言切换组件
 
-### 3. 挑战资源系统
+### 4. 挑战资源系统
 - challenge_resources 子表
 - 支持多种类型 (HTML/React/Vue)
 - esm.sh 依赖加载
 
-### 4. 训练场 (Playground)
+### 5. 训练场 (Playground)
 - 代码编辑器组件
 - 实时预览 iframe
 - 沙箱环境
 
-### 5. Terminal CLI 设计系统
+### 6. Terminal CLI 设计系统
 - 双主题支持 (深色/浅色)
+- 5 种颜色主题 (Phosphor/Windows/Ember/Alarm/Void)
 - 高对比度配色
 - 等宽字体风格
+- 0px border-radius
+
+### 7. UI 组件 (shadcn/ui)
+- 基于 @base-ui/react
+- Button, Dialog, DropdownMenu, Input, Toast 等
+- Terminal 风格适配 (0px radius)
 
 ## 数据库架构
 
@@ -172,6 +184,9 @@ GOOGLE_API_KEY=your_api_key_here
 
 # Database
 DATABASE_URL=postgres://api_user:api_password@localhost:5432/api_test
+
+# Better Auth
+BETTER_AUTH_SECRET=your_secret_here
 ```
 
 ### Docker PostgreSQL 启动
@@ -184,9 +199,6 @@ docker run -d --name api-test-db \
   -e POSTGRES_PASSWORD=api_password \
   -p 5432:5432 \
   postgres:15-alpine
-
-# 或使用 docker-compose
-docker-compose up -d
 ```
 
 ### Google AI SDK 使用示例
@@ -203,10 +215,12 @@ console.log(result.response.text());
 
 ## 注意事项
 
-1. 项目使用 bun 作为包管理器，请勿使用 npm 或 yarn
-2. 确保在运行前安装依赖：`bun install`
+1. 项目使用 pnpm 作为包管理器，通过 Turbo Repo 管理
+2. 确保在运行前安装依赖：`pnpm install`
 3. 开发服务器默认运行在 `http://localhost:3000`
 4. 数据库容器默认端口: 5432
+5. UI 组件位于 `packages/ui/src/components/`，并复制到 `apps/web/components/ui/`
+6. 数据库文件位于 `packages/db/src/`，并复制到 `apps/web/server/lib/db/`
 
 ---
 
