@@ -3,7 +3,7 @@ import path from 'path'
 import { cacheLife, cacheTag } from 'next/cache'
 import { Doc, DocCategory, DocCategoryGroup, DocMeta, Heading } from '@/types/docs'
 
-const DOCS_DIR = path.join(process.cwd(), 'src', 'docs')
+const DOCS_DIR = path.join(process.cwd(), 'docs')
 
 const SUPPORTED_LOCALES = ['en', 'zh', 'ja'] as const
 type Locale = (typeof SUPPORTED_LOCALES)[number]
